@@ -7,6 +7,20 @@
         </div>
 
         <div class="auth-modal__body">
+            <!-- Flash Alert -->
+            <?php if ($flashErr = flash('error')): ?>
+                <div class="auth-alert auth-alert--danger" role="alert">
+                    <span class="auth-alert__icon"><?= icon('alert') ?></span>
+                    <span class="auth-alert__text"><?= e($flashErr) ?></span>
+                </div>
+            <?php endif; ?>
+            <?php if ($flashSucc = flash('success')): ?>
+                <div class="auth-alert auth-alert--success" role="alert">
+                    <span class="auth-alert__icon"><?= icon('check-circle') ?></span>
+                    <span class="auth-alert__text"><?= e($flashSucc) ?></span>
+                </div>
+            <?php endif; ?>
+
             <!-- Alert thông báo lỗi / thành công -->
             <div class="auth-alert" id="authAlert" hidden role="alert">
                 <span class="auth-alert__icon" id="authAlertIcon"></span>
@@ -40,53 +54,53 @@
             </div>
 
             <!-- Form Đăng Ký -->
-            <form id="formRegister" class="auth-form" novalidate>
+            <form id="pageRegisterForm" class="auth-form js-auth-register" method="POST" action="<?= url('/dang-ky') ?>">
                 <input type="hidden" name="_token" value="<?= csrf_token() ?>">
 
                 <div class="auth-form__group">
-                    <label for="regName" class="auth-form__label">Họ và tên <span class="req">*</span></label>
+                    <label for="pageRegName" class="auth-form__label">Họ và tên <span class="req">*</span></label>
                     <div class="auth-input-wrap">
                         <span class="auth-input-icon"><?= icon('user') ?></span>
-                        <input type="text" id="regName" name="name" class="auth-input" placeholder="Nguyễn Văn A" required>
+                        <input type="text" id="pageRegName" name="name" class="auth-input" placeholder="Nguyễn Văn A" required>
                     </div>
                 </div>
 
                 <div class="auth-form__row-2">
                     <div class="auth-form__group">
-                        <label for="regEmail" class="auth-form__label">Địa chỉ Email <span class="req">*</span></label>
+                        <label for="pageRegEmail" class="auth-form__label">Địa chỉ Email <span class="req">*</span></label>
                         <div class="auth-input-wrap">
                             <span class="auth-input-icon"><?= icon('mail') ?></span>
-                            <input type="email" id="regEmail" name="email" class="auth-input" placeholder="name@example.com" required>
+                            <input type="email" id="pageRegEmail" name="email" class="auth-input" placeholder="name@example.com" required>
                         </div>
                     </div>
 
                     <div class="auth-form__group">
-                        <label for="regPhone" class="auth-form__label">Số điện thoại</label>
+                        <label for="pageRegPhone" class="auth-form__label">Số điện thoại</label>
                         <div class="auth-input-wrap">
                             <span class="auth-input-icon"><?= icon('phone') ?></span>
-                            <input type="tel" id="regPhone" name="phone" class="auth-input" placeholder="0909xxxxxx">
+                            <input type="tel" id="pageRegPhone" name="phone" class="auth-input" placeholder="0909xxxxxx">
                         </div>
                     </div>
                 </div>
 
                 <div class="auth-form__row-2">
                     <div class="auth-form__group">
-                        <label for="regPassword" class="auth-form__label">Mật khẩu <span class="req">*</span></label>
+                        <label for="pageRegPassword" class="auth-form__label">Mật khẩu <span class="req">*</span></label>
                         <div class="auth-input-wrap">
                             <span class="auth-input-icon"><?= icon('shield') ?></span>
-                            <input type="password" id="regPassword" name="password" class="auth-input" placeholder="Tối thiểu 6 ký tự" required autocomplete="new-password">
-                            <button type="button" class="auth-toggle-pwd" data-toggle-pwd="#regPassword" aria-label="Xem mật khẩu">
+                            <input type="password" id="pageRegPassword" name="password" class="auth-input" placeholder="Tối thiểu 6 ký tự" required autocomplete="new-password">
+                            <button type="button" class="auth-toggle-pwd" data-toggle-pwd="#pageRegPassword" aria-label="Xem mật khẩu">
                                 <?= icon('eye') ?>
                             </button>
                         </div>
                     </div>
 
                     <div class="auth-form__group">
-                        <label for="regPasswordConfirm" class="auth-form__label">Xác nhận mật khẩu <span class="req">*</span></label>
+                        <label for="pageRegPasswordConfirm" class="auth-form__label">Xác nhận mật khẩu <span class="req">*</span></label>
                         <div class="auth-input-wrap">
                             <span class="auth-input-icon"><?= icon('shield') ?></span>
-                            <input type="password" id="regPasswordConfirm" name="password_confirmation" class="auth-input" placeholder="Nhập lại mật khẩu" required autocomplete="new-password">
-                            <button type="button" class="auth-toggle-pwd" data-toggle-pwd="#regPasswordConfirm" aria-label="Xem mật khẩu">
+                            <input type="password" id="pageRegPasswordConfirm" name="password_confirmation" class="auth-input" placeholder="Nhập lại mật khẩu" required autocomplete="new-password">
+                            <button type="button" class="auth-toggle-pwd" data-toggle-pwd="#pageRegPasswordConfirm" aria-label="Xem mật khẩu">
                                 <?= icon('eye') ?>
                             </button>
                         </div>
@@ -95,12 +109,12 @@
 
                 <div class="auth-form__check-row">
                     <label class="auth-checkbox-label">
-                        <input type="checkbox" name="terms" id="regTerms" checked required>
+                        <input type="checkbox" name="terms" id="pageRegTerms" checked required>
                         <span>Tôi đồng ý với điều khoản dịch vụ & chính sách bảo mật Panasonic</span>
                     </label>
                 </div>
 
-                <button type="submit" class="auth-submit-btn" id="btnRegisterSubmit">
+                <button type="submit" class="auth-submit-btn" id="pageBtnRegisterSubmit">
                     <span class="btn-text">TẠO TÀI KHOẢN MỚI</span>
                     <span class="btn-spinner" hidden></span>
                 </button>

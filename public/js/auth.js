@@ -11,15 +11,15 @@
 
     // Base path helper
     const getBaseUrl = () => {
-        const link = $('link[rel="canonical"]') || $('a[href*="/panasonic"]');
-        if (window.BASE_URL) return window.BASE_URL;
+        if (typeof window.BASE_URL === 'string') return window.BASE_URL;
+        if (window.APP && typeof window.APP.baseUrl === 'string') return window.APP.baseUrl;
         const path = window.location.pathname;
-        if (path.startsWith('/panasonic/')) return '/panasonic';
+        if (path === '/panasonic' || path.startsWith('/panasonic/')) return '/panasonic';
         return '';
     };
 
     const BASE_URL = getBaseUrl();
-    const apiUrl = (path) => `${BASE_URL}${path}`;
+    const apiUrl = (path) => `${BASE_URL}${path.startsWith('/') ? path : '/' + path}`;
 
     // DOM Elements
     const authModal = $('#authModal');
@@ -192,19 +192,25 @@
     // ==========================================
     // API: LOGIN FORM SUBMIT (POST /api/auth/login)
     // ==========================================
-    if (formLogin) {
-        formLogin.addEventListener('submit', async (e) => {
+    const loginForms = $$('.js-auth-login, #formLogin, #pageLoginForm');
+    loginForms.forEach(form => {
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            hideAlert(authAlert);
+            const alertEl = form.closest('.auth-modal__body, .auth-card-standalone')?.querySelector('.auth-alert') || authAlert;
+            const alertText = alertEl?.querySelector('.auth-alert__text') || authAlertText;
+            hideAlert(alertEl);
 
-            const identifier = $('#loginIdentifier', formLogin)?.value.trim();
-            const password = $('#loginPassword', formLogin)?.value;
-            const submitBtn = $('#btnLoginSubmit', formLogin);
+            const identifierInput = form.querySelector('[name="identifier"]') || form.querySelector('[name="email"]');
+            const passwordInput = form.querySelector('[name="password"]');
+            const identifier = identifierInput?.value.trim();
+            const password = passwordInput?.value;
+            const submitBtn = form.querySelector('button[type="submit"]');
             const btnText = submitBtn?.querySelector('.btn-text');
             const btnSpinner = submitBtn?.querySelector('.btn-spinner');
+            const originalText = btnText ? btnText.textContent : (submitBtn?.textContent || 'ĐĂNG NHẬP');
 
             if (!identifier || !password) {
-                showAlert(authAlert, authAlertText, 'Vui lòng nhập đầy đủ Email/Số điện thoại và Mật khẩu.', 'danger');
+                showAlert(alertEl, alertText, 'Vui lòng nhập đầy đủ Email/Số điện thoại và Mật khẩu.', 'danger');
                 return;
             }
 
@@ -218,7 +224,8 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-Token': (window.APP && window.APP.csrf) ? window.APP.csrf : ''
                     },
                     body: JSON.stringify({
                         identifier: identifier,
@@ -229,59 +236,68 @@
                 const data = await res.json();
 
                 if (res.ok && data.success) {
-                    showAlert(authAlert, authAlertText, data.message || 'Đăng nhập thành công! Đang chuyển hướng...', 'success');
+                    showAlert(alertEl, alertText, data.message || 'Đăng nhập thành công! Đang chuyển hướng...', 'success');
                     setTimeout(() => {
-                        window.location.reload();
-                    }, 700);
+                        const cur = window.location.pathname;
+                        if (cur.includes('/dang-nhap') || cur.includes('/dang-ky')) {
+                            window.location.href = data.redirect || apiUrl('/');
+                        } else {
+                            window.location.reload();
+                        }
+                    }, 600);
                 } else {
-                    showAlert(authAlert, authAlertText, data.message || 'Thông tin đăng nhập không chính xác.', 'danger');
+                    showAlert(alertEl, alertText, data.message || 'Thông tin đăng nhập không chính xác.', 'danger');
                 }
             } catch (err) {
-                showAlert(authAlert, authAlertText, 'Lỗi kết nối máy chủ. Vui lòng kiểm tra lại mạng!', 'danger');
+                showAlert(alertEl, alertText, 'Lỗi kết nối máy chủ. Vui lòng kiểm tra lại mạng!', 'danger');
             } finally {
                 if (submitBtn) submitBtn.disabled = false;
-                if (btnText) btnText.textContent = 'ĐĂNG NHẬP';
+                if (btnText) btnText.textContent = originalText;
                 if (btnSpinner) btnSpinner.hidden = true;
             }
         });
-    }
+    });
 
     // ==========================================
     // API: REGISTER FORM SUBMIT (POST /api/auth/register)
     // ==========================================
-    if (formRegister) {
-        formRegister.addEventListener('submit', async (e) => {
+    const registerForms = $$('.js-auth-register, #formRegister, #pageRegisterForm');
+    registerForms.forEach(form => {
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            hideAlert(authAlert);
+            const alertEl = form.closest('.auth-modal__body, .auth-card-standalone')?.querySelector('.auth-alert') || authAlert;
+            const alertText = alertEl?.querySelector('.auth-alert__text') || authAlertText;
+            hideAlert(alertEl);
 
-            const name = $('#regName', formRegister)?.value.trim();
-            const email = $('#regEmail', formRegister)?.value.trim();
-            const phone = $('#regPhone', formRegister)?.value.trim();
-            const password = $('#regPassword', formRegister)?.value;
-            const passwordConfirm = $('#regPasswordConfirm', formRegister)?.value;
-            const terms = $('#regTerms', formRegister)?.checked;
+            const name = form.querySelector('[name="name"]')?.value.trim();
+            const email = form.querySelector('[name="email"]')?.value.trim();
+            const phone = form.querySelector('[name="phone"]')?.value.trim();
+            const password = form.querySelector('[name="password"]')?.value;
+            const passwordConfirm = (form.querySelector('[name="password_confirmation"]') || form.querySelector('[name="passwordConfirm"]'))?.value;
+            const terms = form.querySelector('[name="terms"]')?.checked;
 
-            const submitBtn = $('#btnRegisterSubmit', formRegister);
+            const submitBtn = form.querySelector('button[type="submit"]');
             const btnText = submitBtn?.querySelector('.btn-text');
             const btnSpinner = submitBtn?.querySelector('.btn-spinner');
+            const originalText = btnText ? btnText.textContent : (submitBtn?.textContent || 'TẠO TÀI KHOẢN');
 
             if (!name || !email || !password || !passwordConfirm) {
-                showAlert(authAlert, authAlertText, 'Vui lòng điền đầy đủ các trường thông tin bắt buộc (*).', 'danger');
+                showAlert(alertEl, alertText, 'Vui lòng điền đầy đủ các trường thông tin bắt buộc (*).', 'danger');
                 return;
             }
 
             if (!terms) {
-                showAlert(authAlert, authAlertText, 'Vui lòng tích đồng ý với chính sách & điều khoản.', 'danger');
+                showAlert(alertEl, alertText, 'Vui lòng tích đồng ý với chính sách & điều khoản.', 'danger');
                 return;
             }
 
             if (password !== passwordConfirm) {
-                showAlert(authAlert, authAlertText, 'Mật khẩu xác nhận không khớp với mật khẩu đã nhập.', 'danger');
+                showAlert(alertEl, alertText, 'Mật khẩu xác nhận không khớp với mật khẩu đã nhập.', 'danger');
                 return;
             }
 
             if (password.length < 6) {
-                showAlert(authAlert, authAlertText, 'Mật khẩu phải có độ dài ít nhất 6 ký tự.', 'danger');
+                showAlert(alertEl, alertText, 'Mật khẩu phải có độ dài ít nhất 6 ký tự.', 'danger');
                 return;
             }
 
@@ -295,7 +311,8 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-Token': (window.APP && window.APP.csrf) ? window.APP.csrf : ''
                     },
                     body: JSON.stringify({
                         name: name,
@@ -309,22 +326,27 @@
                 const data = await res.json();
 
                 if (res.ok && data.success) {
-                    showAlert(authAlert, authAlertText, data.message || 'Đăng ký thành công! Đang đăng nhập...', 'success');
+                    showAlert(alertEl, alertText, data.message || 'Đăng ký thành công! Đang đăng nhập...', 'success');
                     setTimeout(() => {
-                        window.location.reload();
-                    }, 800);
+                        const cur = window.location.pathname;
+                        if (cur.includes('/dang-nhap') || cur.includes('/dang-ky')) {
+                            window.location.href = data.redirect || apiUrl('/');
+                        } else {
+                            window.location.reload();
+                        }
+                    }, 700);
                 } else {
-                    showAlert(authAlert, authAlertText, data.message || 'Không thể đăng ký tài khoản.', 'danger');
+                    showAlert(alertEl, alertText, data.message || 'Không thể đăng ký tài khoản.', 'danger');
                 }
             } catch (err) {
-                showAlert(authAlert, authAlertText, 'Lỗi kết nối máy chủ. Vui lòng thử lại!', 'danger');
+                showAlert(alertEl, alertText, 'Lỗi kết nối máy chủ. Vui lòng thử lại!', 'danger');
             } finally {
                 if (submitBtn) submitBtn.disabled = false;
-                if (btnText) btnText.textContent = 'TẠO TÀI KHOẢN MỚI';
+                if (btnText) btnText.textContent = originalText;
                 if (btnSpinner) btnSpinner.hidden = true;
             }
         });
-    }
+    });
 
     // ==========================================
     // API: SOCIAL LOGIN (GOOGLE & FACEBOOK SDK INTEGRATION)
@@ -682,5 +704,10 @@
             openModal(tab);
         }
     });
+
+    // Global API
+    window.openLoginModal = () => openModal('login');
+    window.openRegisterModal = () => openModal('register');
+    window.openAuthModal = openModal;
 
 })();

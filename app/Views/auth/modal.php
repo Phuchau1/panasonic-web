@@ -61,7 +61,7 @@
 
             <!-- Pane 1: Đăng Nhập -->
             <div class="auth-tab-pane is-active" id="tabPaneLogin" role="tabpanel">
-                <form id="formLogin" class="auth-form" novalidate>
+                <form id="formLogin" class="auth-form js-auth-login" method="POST" action="<?= url('/api/auth/login') ?>" novalidate>
                     <input type="hidden" name="_token" value="<?= csrf_token() ?>">
 
                     <div class="auth-form__group">
@@ -106,7 +106,7 @@
 
             <!-- Pane 2: Đăng Ký -->
             <div class="auth-tab-pane" id="tabPaneRegister" role="tabpanel" hidden>
-                <form id="formRegister" class="auth-form" novalidate>
+                <form id="formRegister" class="auth-form js-auth-register" method="POST" action="<?= url('/api/auth/register') ?>" novalidate>
                     <input type="hidden" name="_token" value="<?= csrf_token() ?>">
 
                     <div class="auth-form__group">

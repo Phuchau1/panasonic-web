@@ -112,7 +112,9 @@ $router->post('/api/auth/update-profile', [AuthController::class, 'updateProfile
 
 // Authentication Web Pages & User Profile
 $router->get('/dang-nhap', [AuthController::class, 'loginPage']);
+$router->post('/dang-nhap', [AuthController::class, 'login']);
 $router->get('/dang-ky', [AuthController::class, 'registerPage']);
+$router->post('/dang-ky', [AuthController::class, 'register']);
 $router->get('/dang-xuat', [AuthController::class, 'logout']);
 $router->get('/tai-khoan', [AuthController::class, 'profile']);
 

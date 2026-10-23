@@ -15,17 +15,29 @@ class AuthController extends Controller
         $this->users = new User();
     }
 
+    private function isApiRequest(): bool
+    {
+        return $this->isAjax()
+            || str_contains(strtolower($_SERVER['HTTP_ACCEPT'] ?? ''), 'application/json')
+            || str_contains(strtolower($_SERVER['CONTENT_TYPE'] ?? ''), 'application/json');
+    }
+
     /**
-     * API: Đăng nhập bằng Email/SĐT và Mật khẩu
-     * POST /api/auth/login
+     * API & Web: Đăng nhập bằng Email/SĐT và Mật khẩu
+     * POST /api/auth/login hoặc POST /dang-nhap
      */
     public function login(): void
     {
         $input = $this->getJsonInput();
         $identifier = trim((string)($input['email'] ?? $input['identifier'] ?? ''));
         $password = (string)($input['password'] ?? '');
+        $isApi = $this->isApiRequest();
 
         if (empty($identifier) || empty($password)) {
+            if (!$isApi) {
+                flash('error', 'Vui lòng nhập đầy đủ Email/Số điện thoại và Mật khẩu.');
+                $this->redirect('/dang-nhap');
+            }
             $this->json([
                 'success' => false,
                 'message' => 'Vui lòng nhập đầy đủ Email/Số điện thoại và Mật khẩu.'
@@ -35,6 +47,10 @@ class AuthController extends Controller
         $user = $this->users->attempt($identifier, $password);
 
         if (!$user) {
+            if (!$isApi) {
+                flash('error', 'Thông tin đăng nhập hoặc mật khẩu không chính xác.');
+                $this->redirect('/dang-nhap');
+            }
             $this->json([
                 'success' => false,
                 'message' => 'Thông tin đăng nhập hoặc mật khẩu không chính xác.'
@@ -66,7 +82,12 @@ class AuthController extends Controller
             }
         }
 
-        $redirect = $input['redirect'] ?? url('/');
+        $redirect = !empty($input['redirect']) ? (string)$input['redirect'] : url('/');
+
+        if (!$isApi) {
+            flash('success', 'Đăng nhập thành công! Chào mừng bạn quay lại.');
+            $this->redirect($redirect ?: '/');
+        }
 
         $this->json([
             'success'  => true,
@@ -77,8 +98,8 @@ class AuthController extends Controller
     }
 
     /**
-     * API: Đăng ký tài khoản mới
-     * POST /api/auth/register
+     * API & Web: Đăng ký tài khoản mới
+     * POST /api/auth/register hoặc POST /dang-ky
      */
     public function register(): void
     {
@@ -88,8 +109,13 @@ class AuthController extends Controller
         $phone = trim((string)($input['phone'] ?? ''));
         $password = (string)($input['password'] ?? '');
         $passwordConfirm = (string)($input['password_confirmation'] ?? $input['passwordConfirm'] ?? '');
+        $isApi = $this->isApiRequest();
 
         if (mb_strlen($name) < 2) {
+            if (!$isApi) {
+                flash('error', 'Họ và tên phải có ít nhất 2 ký tự.');
+                $this->redirect('/dang-ky');
+            }
             $this->json([
                 'success' => false,
                 'message' => 'Họ và tên phải có ít nhất 2 ký tự.'
@@ -97,6 +123,10 @@ class AuthController extends Controller
         }
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            if (!$isApi) {
+                flash('error', 'Địa chỉ email không đúng định dạng.');
+                $this->redirect('/dang-ky');
+            }
             $this->json([
                 'success' => false,
                 'message' => 'Địa chỉ email không đúng định dạng.'
@@ -104,6 +134,10 @@ class AuthController extends Controller
         }
 
         if (strlen($password) < 6) {
+            if (!$isApi) {
+                flash('error', 'Mật khẩu phải có độ dài tối thiểu 6 ký tự.');
+                $this->redirect('/dang-ky');
+            }
             $this->json([
                 'success' => false,
                 'message' => 'Mật khẩu phải có độ dài tối thiểu 6 ký tự.'
@@ -111,6 +145,10 @@ class AuthController extends Controller
         }
 
         if ($passwordConfirm !== '' && $password !== $passwordConfirm) {
+            if (!$isApi) {
+                flash('error', 'Xác nhận mật khẩu không trùng khớp.');
+                $this->redirect('/dang-ky');
+            }
             $this->json([
                 'success' => false,
                 'message' => 'Xác nhận mật khẩu không trùng khớp.'
@@ -136,6 +174,17 @@ class AuthController extends Controller
                 'provider' => 'local',
             ];
 
+            // Tạo Remember Token vĩnh viễn (30 ngày)
+            $rememberToken = bin2hex(random_bytes(32));
+            $this->users->update((int) $user['id'], ['remember_token' => $rememberToken]);
+            $base = base_path() ?: '/';
+            setcookie('panas_remember', $rememberToken, time() + (30 * 24 * 3600), $base, '', false, true);
+
+            if (!$isApi) {
+                flash('success', 'Đăng ký tài khoản thành công! Bạn đã được tự động đăng nhập.');
+                $this->redirect('/');
+            }
+
             $this->json([
                 'success'  => true,
                 'message'  => 'Đăng ký tài khoản thành công! Bạn đã được tự động đăng nhập.',
@@ -143,11 +192,19 @@ class AuthController extends Controller
                 'redirect' => url('/')
             ]);
         } catch (\InvalidArgumentException $e) {
+            if (!$isApi) {
+                flash('error', $e->getMessage());
+                $this->redirect('/dang-ky');
+            }
             $this->json([
                 'success' => false,
                 'message' => $e->getMessage()
             ], 422);
         } catch (\Exception $e) {
+            if (!$isApi) {
+                flash('error', 'Không thể tạo tài khoản. Vui lòng thử lại sau.');
+                $this->redirect('/dang-ky');
+            }
             $this->json([
                 'success' => false,
                 'message' => 'Không thể tạo tài khoản. Vui lòng thử lại sau.'

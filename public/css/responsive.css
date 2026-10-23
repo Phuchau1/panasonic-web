@@ -68,6 +68,131 @@
     flex: 1;
 }
 
+/* Drawer User Account Card */
+.drawer__user-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 0.9rem 1rem;
+    margin-bottom: 1rem;
+}
+.drawer__user-card--logged {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: #eff6ff;
+    border-color: #bfdbfe;
+}
+.drawer__user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #004098;
+    color: #fff;
+    font-weight: 700;
+    font-size: 1rem;
+}
+.drawer__avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.drawer__user-info {
+    flex: 1;
+    min-width: 0;
+}
+.drawer__user-name {
+    display: block;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #0f172a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.drawer__user-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    color: #004098;
+    font-weight: 600;
+}
+.drawer__user-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.drawer__btn-acc {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.35rem 0.65rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #004098;
+    background: #ffffff;
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    text-decoration: none;
+}
+.drawer__btn-logout {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    color: #ef4444;
+    background: #ffffff;
+    border: 1px solid #fecaca;
+    border-radius: 6px;
+    text-decoration: none;
+}
+.drawer__user-prompt {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    margin-bottom: 0.75rem;
+}
+.drawer__user-prompt strong {
+    display: block;
+    font-size: 0.88rem;
+    color: #0f172a;
+    font-weight: 700;
+}
+.drawer__user-prompt p {
+    margin: 0;
+    font-size: 0.75rem;
+    color: #64748b;
+    line-height: 1.35;
+}
+.drawer__user-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: #e0e7ff;
+    color: #3730a3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.drawer__user-btns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+}
+.drawer__user-btns .btn {
+    text-align: center;
+    justify-content: center;
+    padding: 0.45rem 0.5rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
 .drawer__label {
     font-size: 0.75rem;
     text-transform: uppercase;

@@ -200,7 +200,7 @@ function auth_user(): ?array
 
 function is_logged_in(): bool
 {
-    return !empty($_SESSION['user']['id']);
+    return auth_user() !== null;
 }
 
 /**

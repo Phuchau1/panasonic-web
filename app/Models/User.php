@@ -15,6 +15,8 @@ class User extends BaseModel
         'provider_id',
         'avatar',
         'address',
+        'cart_data',
+        'remember_token',
         'role',
         'status',
     ];

@@ -19,6 +19,41 @@ $navSeries     = $navSeries ?? (new ProductSeries())->active();
     </div>
 
     <div class="drawer__body">
+        <!-- Khu vực Tài Khoản Người Dùng (Mobile) -->
+        <?php if (is_logged_in()): $mUser = auth_user(); ?>
+            <div class="drawer__user-card drawer__user-card--logged">
+                <div class="drawer__user-avatar">
+                    <?php if (!empty($mUser['avatar'])): ?>
+                        <img src="<?= e($mUser['avatar']) ?>" alt="<?= e($mUser['name']) ?>" class="drawer__avatar-img">
+                    <?php else: ?>
+                        <span class="drawer__avatar-badge"><?= mb_strtoupper(mb_substr($mUser['name'] ?? 'U', 0, 1)) ?></span>
+                    <?php endif; ?>
+                </div>
+                <div class="drawer__user-info">
+                    <strong class="drawer__user-name"><?= e($mUser['name']) ?></strong>
+                    <span class="drawer__user-badge"><?= ($mUser['role'] ?? '') === 'admin' ? 'Quản trị viên' : 'Khách hàng thành viên' ?></span>
+                </div>
+                <div class="drawer__user-actions">
+                    <a href="<?= url('/tai-khoan') ?>" class="drawer__btn-acc"><?= icon('user') ?> Hồ sơ</a>
+                    <a href="<?= url('/dang-xuat') ?>" class="drawer__btn-logout"><?= icon('logout') ?></a>
+                </div>
+            </div>
+        <?php else: ?>
+            <div class="drawer__user-card">
+                <div class="drawer__user-prompt">
+                    <div class="drawer__user-icon"><?= icon('user') ?></div>
+                    <div>
+                        <strong>Tài khoản Doanh Nghiệp</strong>
+                        <p>Đăng nhập để nhận giá chiết khấu dự án tốt nhất</p>
+                    </div>
+                </div>
+                <div class="drawer__user-btns">
+                    <a href="<?= url('/dang-nhap') ?>" class="btn btn--primary btn--sm" data-auth-trigger="login">Đăng nhập</a>
+                    <a href="<?= url('/dang-ky') ?>" class="btn btn--outline btn--sm" data-auth-trigger="register">Đăng ký</a>
+                </div>
+            </div>
+        <?php endif; ?>
+
         <a href="<?= url('/tai-catalogue') ?>" class="btn btn--catalog btn--block"><?= icon('download') ?><span><small>Tải ngay</small>Catalogue 2026 PDF</span></a>
 
         <p class="drawer__label">Danh mục sản phẩm</p>
@@ -37,12 +72,19 @@ $navSeries     = $navSeries ?? (new ProductSeries())->active();
             <?php endforeach; ?>
         </div>
 
-        <p class="drawer__label">Dự Án & Liên Hệ</p>
+        <p class="drawer__label">Dự Án & Tiện Ích</p>
         <ul class="drawer__list">
             <li><a href="<?= url('/du-an') ?>"><?= icon('building') ?> Dự Án Tiêu Biểu (TP.HCM & Long An)</a></li>
             <li><a href="<?= url('/bao-gia-cong-trinh') ?>"><?= icon('upload') ?> Gửi Báo Giá & Bóc Tách Vật Tư</a></li>
             <li><a href="<?= url('/lien-he') ?>"><?= icon('map-pin') ?> Liên Hệ & Bản Đồ Kho Hàng</a></li>
             <li><a href="<?= url('/gio-hang') ?>"><?= icon('cart') ?> Giỏ hàng (<span data-cart-count><?= cart_count() ?></span>)</a></li>
+            <?php if (is_logged_in()): ?>
+                <li><a href="<?= url('/tai-khoan') ?>"><?= icon('user') ?> Tài khoản cá nhân</a></li>
+                <li><a href="<?= url('/dang-xuat') ?>"><?= icon('logout') ?> Đăng xuất</a></li>
+            <?php else: ?>
+                <li><a href="<?= url('/dang-nhap') ?>"><?= icon('user') ?> Đăng nhập tài khoản</a></li>
+                <li><a href="<?= url('/dang-ky') ?>"><?= icon('shield') ?> Đăng ký thành viên mới</a></li>
+            <?php endif; ?>
         </ul>
     </div>
 

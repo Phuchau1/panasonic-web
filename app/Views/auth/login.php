@@ -7,7 +7,21 @@
         </div>
 
         <div class="auth-modal__body">
-            <!-- Alert thông báo lỗi / thành công -->
+            <!-- Flash Alert -->
+            <?php if ($flashErr = flash('error')): ?>
+                <div class="auth-alert auth-alert--danger" role="alert">
+                    <span class="auth-alert__icon"><?= icon('alert') ?></span>
+                    <span class="auth-alert__text"><?= e($flashErr) ?></span>
+                </div>
+            <?php endif; ?>
+            <?php if ($flashSucc = flash('success')): ?>
+                <div class="auth-alert auth-alert--success" role="alert">
+                    <span class="auth-alert__icon"><?= icon('check-circle') ?></span>
+                    <span class="auth-alert__text"><?= e($flashSucc) ?></span>
+                </div>
+            <?php endif; ?>
+
+            <!-- Alert thông báo lỗi / thành công động qua JS -->
             <div class="auth-alert" id="authAlert" hidden role="alert">
                 <span class="auth-alert__icon" id="authAlertIcon"></span>
                 <span class="auth-alert__text" id="authAlertText"></span>
@@ -40,26 +54,26 @@
             </div>
 
             <!-- Form Đăng Nhập -->
-            <form id="formLogin" class="auth-form" novalidate>
+            <form id="pageLoginForm" class="auth-form js-auth-login" method="POST" action="<?= url('/dang-nhap') ?>">
                 <input type="hidden" name="_token" value="<?= csrf_token() ?>">
 
                 <div class="auth-form__group">
-                    <label for="loginIdentifier" class="auth-form__label">Email hoặc Số điện thoại</label>
+                    <label for="pageLoginIdentifier" class="auth-form__label">Email hoặc Số điện thoại</label>
                     <div class="auth-input-wrap">
                         <span class="auth-input-icon"><?= icon('mail') ?></span>
-                        <input type="text" id="loginIdentifier" name="identifier" class="auth-input" placeholder="nhathau@congtrinh.vn hoặc 090..." required autocomplete="username">
+                        <input type="text" id="pageLoginIdentifier" name="identifier" class="auth-input" placeholder="nhathau@congtrinh.vn hoặc 090..." required autocomplete="username">
                     </div>
                 </div>
 
                 <div class="auth-form__group">
                     <div class="auth-form__flex-label">
-                        <label for="loginPassword" class="auth-form__label">Mật khẩu</label>
+                        <label for="pageLoginPassword" class="auth-form__label">Mật khẩu</label>
                         <a href="javascript:void(0)" class="auth-forgot-link" id="linkForgotPassword">Quên mật khẩu?</a>
                     </div>
                     <div class="auth-input-wrap">
                         <span class="auth-input-icon"><?= icon('shield') ?></span>
-                        <input type="password" id="loginPassword" name="password" class="auth-input" placeholder="••••••••" required autocomplete="current-password">
-                        <button type="button" class="auth-toggle-pwd" data-toggle-pwd="#loginPassword" aria-label="Xem mật khẩu">
+                        <input type="password" id="pageLoginPassword" name="password" class="auth-input" placeholder="••••••••" required autocomplete="current-password">
+                        <button type="button" class="auth-toggle-pwd" data-toggle-pwd="#pageLoginPassword" aria-label="Xem mật khẩu">
                             <?= icon('eye') ?>
                         </button>
                     </div>
@@ -67,12 +81,12 @@
 
                 <div class="auth-form__check-row">
                     <label class="auth-checkbox-label">
-                        <input type="checkbox" name="remember" id="loginRemember" checked>
+                        <input type="checkbox" name="remember" id="pageLoginRemember" checked>
                         <span>Ghi nhớ đăng nhập trên thiết bị này</span>
                     </label>
                 </div>
 
-                <button type="submit" class="auth-submit-btn" id="btnLoginSubmit">
+                <button type="submit" class="auth-submit-btn" id="pageBtnLoginSubmit">
                     <span class="btn-text">ĐĂNG NHẬP VÀO HỆ THỐNG</span>
                     <span class="btn-spinner" hidden></span>
                 </button>
