@@ -733,12 +733,131 @@
         font-size: 13px !important;
     }
 
-    .footer__grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-        padding-top: 1.5rem;
-        padding-bottom: 1.5rem;
+    /* 4 Tiêu chí Uy tín Footer: 2x2 Grid siêu gọn gàng */
+    .footer__trust {
+        padding: 0.85rem 0.65rem !important;
     }
+    .trust-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.45rem !important;
+    }
+    .trust-item {
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+        padding: 0.55rem 0.45rem !important;
+        background: rgba(255, 255, 255, 0.04) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        border-radius: 8px !important;
+    }
+    .trust-item svg {
+        width: 30px !important;
+        height: 30px !important;
+        padding: 6px !important;
+        flex-shrink: 0 !important;
+    }
+    .trust-item strong {
+        font-size: 0.78rem !important;
+        line-height: 1.2 !important;
+        margin-bottom: 2px !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+    .trust-item span {
+        font-size: 0.68rem !important;
+        line-height: 1.25 !important;
+        color: #94a3b8 !important;
+        display: -webkit-box !important;
+        -webkit-line-clamp: 1 !important;
+        -webkit-box-orient: vertical !important;
+        overflow: hidden !important;
+    }
+
+    /* Bố cục Footer cột trên Mobile: Thương hiệu trên, Sản phẩm & Series song song 2 cột */
+    .footer__grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 1.25rem 0.75rem !important;
+        padding-top: 1.25rem !important;
+        padding-bottom: 1.75rem !important;
+    }
+    .footer__col--brand {
+        grid-column: 1 / -1 !important;
+    }
+    .footer__col {
+        min-width: 0 !important;
+    }
+    .footer__col:last-child {
+        grid-column: 1 / -1 !important;
+    }
+    .footer__col:last-child ul {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.35rem 0.65rem !important;
+    }
+    .footer__title {
+        font-size: 0.85rem !important;
+        margin-bottom: 0.65rem !important;
+        padding-bottom: 0.35rem !important;
+    }
+    .footer__col ul {
+        list-style: none !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.35rem !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    .footer__col ul li a {
+        font-size: 0.78rem !important;
+        color: #cbd5e1 !important;
+        line-height: 1.35 !important;
+        display: block !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+    .footer__desc {
+        font-size: 0.78rem !important;
+        margin-top: 0.5rem !important;
+        line-height: 1.5 !important;
+    }
+    .footer__contact {
+        margin-top: 0.75rem !important;
+        gap: 0.4rem !important;
+        font-size: 0.78rem !important;
+    }
+    .footer__contact li {
+        gap: 0.45rem !important;
+        line-height: 1.4 !important;
+        word-break: break-word !important;
+    }
+
+    /* Tách nút Floating Call/Zalo sang GÓC TRÁI, nút Cuộn Lên sang GÓC PHẢI - Không bao giờ che khuất nội dung */
+    .fab {
+        left: 12px !important;
+        right: auto !important;
+        bottom: 18px !important;
+        flex-direction: column-reverse !important;
+        gap: 8px !important;
+        z-index: 990 !important;
+    }
+    .fab__btn {
+        width: 40px !important;
+        height: 40px !important;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35) !important;
+    }
+    .back-top {
+        right: 12px !important;
+        left: auto !important;
+        bottom: 18px !important;
+        width: 36px !important;
+        height: 36px !important;
+        z-index: 989 !important;
+    }
+
     .footer__bottom-inner {
         flex-direction: column;
         text-align: center;
