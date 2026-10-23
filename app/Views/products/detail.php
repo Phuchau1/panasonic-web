@@ -2,6 +2,7 @@
 /** @var array $product */
 /** @var array $related */
 
+$bodyClass = 'page-product-detail';
 $discountPercent = $product['discount_percent'] ?? 0;
 if ($discountPercent <= 0 && $product['price'] > 0) {
     // Generate attractive catalog discount (12% - 25% typical for Panasonic distribution)
@@ -586,6 +587,29 @@ $originalPrice = (int) ($product['price'] > 0 ? ($product['price'] / (1 - ($disc
             </div>
         </section>
     <?php endif; ?>
+</div>
+
+<!-- Mobile Sticky Bottom Purchase Bar (Chuẩn sàn TMĐT Shopee / Thế Giới Di Động) -->
+<div class="pdetail-sticky-bar hide-desktop" id="pdetailStickyBar">
+    <a href="https://zalo.me/<?= e(config('zalo', '0798966958')) ?>" target="_blank" rel="noopener" class="sticky-bar__btn-icon sticky-bar__btn-icon--zalo" title="Chat Zalo nhận báo giá">
+        <span class="sticky-ico-wrap">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.03 2 11c0 2.87 1.5 5.43 3.84 7.03L5 22l4.13-1.37c.92.25 1.89.37 2.87.37 5.52 0 10-4.03 10-9s-4.48-9-10-9z"/></svg>
+        </span>
+        <span class="sticky-txt">Zalo</span>
+    </a>
+    <a href="tel:<?= e(preg_replace('/\D/', '', config('hotline', '0798966958'))) ?>" class="sticky-bar__btn-icon sticky-bar__btn-icon--call" title="Gọi tư vấn kỹ sư">
+        <span class="sticky-ico-wrap">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>
+        </span>
+        <span class="sticky-txt">Gọi ngay</span>
+    </a>
+    <button type="button" class="sticky-bar__btn sticky-bar__btn--cart" data-add-cart="<?= (int)$product['id'] ?>" data-qty-source="#detailProductQty">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+        <span>Thêm giỏ</span>
+    </button>
+    <button type="button" class="sticky-bar__btn sticky-bar__btn--buy" onclick="buyNow(<?= (int)$product['id'] ?>)">
+        <span>MUA NGAY</span>
+    </button>
 </div>
 
 <script>

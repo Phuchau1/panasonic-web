@@ -407,6 +407,39 @@
         font-size: 10px !important;
     }
 
+    /* 4 Cam kết Doanh nghiệp Trang chủ (Trust Bar) - 2x2 mini grid */
+    .hero-japan-trust-bar {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 6px 8px !important;
+        padding: 8px 10px !important;
+    }
+    .hj-trust-divider {
+        display: none !important;
+    }
+    .hj-trust-item {
+        gap: 6px !important;
+        min-width: 0 !important;
+    }
+    .hj-trust-icon {
+        width: 28px !important;
+        height: 28px !important;
+        min-width: 28px !important;
+    }
+    .hj-trust-icon svg {
+        width: 14px !important;
+        height: 14px !important;
+    }
+    .hj-trust-title {
+        font-size: 11px !important;
+        line-height: 1.2 !important;
+        display: block !important;
+    }
+    .hj-trust-desc {
+        font-size: 9.5px !important;
+        line-height: 1.25 !important;
+    }
+
     /* Category Showcase Headers trên mobile */
     .category-block-header {
         margin-top: 16px !important;
@@ -642,32 +675,323 @@
     }
 }
 
+/* Responsive Product Detail - Gọn gàng, dễ nhìn, chuẩn sàn thương mại điện tử */
 @media (max-width: 768px) {
+    /* Ẩn hoàn toàn nút gọi/Zalo tròn (.fab) trên trang chi tiết sản phẩm để tránh che thông tin */
+    body.page-product-detail .fab,
+    body:has(.product-detail-layout) .fab {
+        display: none !important;
+    }
+
+    body.page-product-detail .back-top,
+    body:has(.product-detail-layout) .back-top {
+        bottom: 64px !important;
+    }
+
+    .page-product-detail,
+    body:has(.product-detail-layout) {
+        padding-bottom: 58px !important;
+    }
+
+    /* Thanh hành động cố định dưới chân trang (Sticky Mobile Bottom Bar) */
+    .pdetail-sticky-bar {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 9999 !important;
+        height: 52px !important;
+        background: #ffffff !important;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.12) !important;
+        display: flex !important;
+        align-items: center !important;
+        padding: 0 8px !important;
+        gap: 6px !important;
+        border-top: 1px solid #e2e8f0 !important;
+    }
+
+    .sticky-bar__btn-icon {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 48px !important;
+        height: 100% !important;
+        text-decoration: none !important;
+        font-size: 10px !important;
+        font-weight: 600 !important;
+        flex-shrink: 0 !important;
+    }
+
+    .sticky-bar__btn-icon--zalo {
+        color: #0068ff !important;
+    }
+
+    .sticky-bar__btn-icon--call {
+        color: #059669 !important;
+    }
+
+    .sticky-ico-wrap {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        height: 22px !important;
+    }
+
+    .sticky-bar__btn {
+        flex: 1 !important;
+        height: 38px !important;
+        border-radius: 6px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 5px !important;
+        font-size: 11.5px !important;
+        font-weight: 700 !important;
+        cursor: pointer !important;
+        border: none !important;
+    }
+
+    .sticky-bar__btn--cart {
+        background: #f0fdf4 !important;
+        color: #15803d !important;
+        border: 1px solid #bbf7d0 !important;
+    }
+
+    .sticky-bar__btn--buy {
+        background: #dc2626 !important;
+        color: #ffffff !important;
+        box-shadow: 0 2px 6px rgba(220, 38, 38, 0.25) !important;
+    }
+
     .product-detail-layout {
         grid-template-columns: 1fr !important;
-        gap: 1.25rem !important;
+        gap: 10px !important;
+        margin-bottom: 1.25rem !important;
     }
-    .pdetail-sidebar {
-        grid-column: span 1;
-        display: flex;
-        flex-direction: column;
+
+    /* Media Gallery Card */
+    .pdetail-media {
+        padding: 8px !important;
+        border-radius: 8px !important;
     }
-    .pdetail-cta-row {
-        grid-template-columns: 1fr !important;
+    .pdetail-gallery__main {
+        margin-bottom: 6px !important;
+        max-height: 290px !important;
+    }
+    .pdetail-badge-genuine {
+        top: 6px !important;
+        left: 6px !important;
+        font-size: 10px !important;
+        padding: 2px 6px !important;
+    }
+    .pdetail-badge-discount {
+        top: 6px !important;
+        right: 6px !important;
+        font-size: 11px !important;
+        padding: 2px 6px !important;
+    }
+    .pdetail-thumb-btn {
+        width: 48px !important;
+        height: 48px !important;
+        padding: 2px !important;
+    }
+    .pdetail-share-box {
+        margin-top: 8px !important;
+        padding-top: 8px !important;
+        font-size: 11px !important;
+    }
+    .share-btn {
+        padding: 2px 6px !important;
+        font-size: 10.5px !important;
+    }
+
+    /* Center Product Info & Pricing Card */
+    .pdetail-center {
+        padding: 10px !important;
+        border-radius: 8px !important;
+    }
+    .pdetail-meta-tags {
+        gap: 4px !important;
+        margin-bottom: 6px !important;
+    }
+    .meta-tag {
+        font-size: 10.5px !important;
+        padding: 2px 6px !important;
     }
     .pdetail-title {
-        font-size: 1.2rem !important;
+        font-size: 1.15rem !important;
+        line-height: 1.35 !important;
+        margin: 0 0 6px !important;
+    }
+    .pdetail-rating-row {
+        gap: 5px !important;
+        font-size: 11px !important;
+        margin-bottom: 8px !important;
+    }
+    .pdetail-status-pill {
+        font-size: 10.5px !important;
+        padding: 2px 6px !important;
+    }
+
+    /* Khối Giá Bán */
+    .pdetail-price-box {
+        padding: 8px 10px !important;
+        margin-bottom: 10px !important;
+        border-radius: 6px !important;
+    }
+    .pdetail-price-row {
+        gap: 6px !important;
+        align-items: baseline !important;
+        flex-wrap: wrap !important;
     }
     .pdetail-price-current {
-        font-size: 1.4rem !important;
+        font-size: 1.35rem !important;
+    }
+    .pdetail-price-original {
+        font-size: 11px !important;
+    }
+    .pdetail-price-vat {
+        font-size: 10.5px !important;
+    }
+    .pdetail-wholesale-banner {
+        padding: 6px 8px !important;
+        margin-top: 6px !important;
+        border-radius: 4px !important;
+    }
+    .wholesale-tag {
+        font-size: 10px !important;
+    }
+    .wholesale-val {
+        font-size: 12.5px !important;
+    }
+    .wholesale-min {
+        font-size: 9.5px !important;
+    }
+
+    /* Checklist Nổi Bật */
+    .pdetail-checklist {
+        padding: 8px 10px !important;
+        margin-bottom: 10px !important;
+        border-radius: 6px !important;
+    }
+    .checklist-items {
+        gap: 4px !important;
+    }
+    .checklist-items li {
+        font-size: 11.5px !important;
+        line-height: 1.35 !important;
+    }
+
+    /* Khu vực Số Lượng & Nút Đặt Hàng */
+    .pdetail-purchase-area {
+        margin-top: 8px !important;
+    }
+    .pdetail-qty-row {
+        margin-bottom: 8px !important;
+        font-size: 12px !important;
+    }
+    .pdetail-cta-row {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 6px !important;
+    }
+    .btn-cta {
+        padding: 6px 4px !important;
+        min-height: 40px !important;
+        border-radius: 6px !important;
+    }
+    .cta-title {
+        font-size: 12px !important;
+    }
+    .cta-subtitle {
+        font-size: 9px !important;
+    }
+    .pdetail-cart-row {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 6px !important;
+        margin-top: 6px !important;
+    }
+    .btn-add-cart-secondary, .btn-zalo-secondary {
+        height: 36px !important;
+        padding: 0 6px !important;
+        font-size: 11px !important;
+        justify-content: center !important;
+        text-align: center !important;
+        border-radius: 6px !important;
+    }
+
+    /* Sidebar Hỗ Trợ & Chính Sách */
+    .pdetail-sidebar {
+        grid-column: span 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+    }
+    .sidebar-hotline-card,
+    .sidebar-policy-card,
+    .sidebar-catalog-card {
+        padding: 10px !important;
+        border-radius: 8px !important;
+    }
+    .sidebar-policy-card .policy-list {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 8px 10px !important;
+    }
+    .sidebar-policy-card .policy-list li {
+        gap: 6px !important;
+        margin-bottom: 0 !important;
+        font-size: 10.5px !important;
+    }
+    .policy-ico {
+        font-size: 16px !important;
+    }
+    .sidebar-policy-card .policy-list strong {
+        font-size: 11px !important;
+        display: block !important;
+        line-height: 1.25 !important;
+    }
+    .sidebar-policy-card .policy-list p {
+        font-size: 9.5px !important;
+        line-height: 1.25 !important;
+        margin: 0 !important;
+    }
+
+    /* Tabs Nội Dung Chi Tiết & Thông Số */
+    .product-body-tabs {
+        margin-top: 14px !important;
+    }
+    .pbody-nav {
+        display: flex !important;
+        overflow-x: auto !important;
+        flex-wrap: nowrap !important;
+        gap: 4px !important;
+        padding-bottom: 6px !important;
+        -webkit-overflow-scrolling: touch !important;
+        border-bottom: 2px solid #e2e8f0 !important;
+    }
+    .pbody-tab-btn {
+        flex-shrink: 0 !important;
+        padding: 6px 10px !important;
+        font-size: 11.5px !important;
+        border-radius: 6px !important;
+        white-space: nowrap !important;
     }
     .pbody-content {
-        padding: 1.25rem !important;
+        padding: 12px 10px !important;
+        border-radius: 0 0 8px 8px !important;
+    }
+    .specs-table th, .specs-table td {
+        padding: 6px 8px !important;
+        font-size: 11px !important;
     }
     .technical-drawing-grid,
     .genuine-comparison-grid,
     .contact-cards-grid {
         grid-template-columns: 1fr !important;
+        gap: 8px !important;
     }
 }
 
@@ -834,25 +1158,44 @@
         grid-column: span 2 !important;
     }
 
-    /* Điều hướng nhanh dòng thiết bị: 2 cột gọn, không cuộn dài vô tận */
+    /* Điều hướng nhanh dòng thiết bị: 2 cột gọn, không tràn lề */
+    .cat-quick-nav {
+        padding: 10px !important;
+        border-radius: 10px !important;
+        margin-bottom: 1.25rem !important;
+    }
     .cat-quick-nav__grid {
         grid-template-columns: repeat(2, 1fr) !important;
         gap: 6px !important;
     }
     .cat-quick-chip {
         padding: 6px 8px !important;
-        border-radius: 6px !important;
-        gap: 8px !important;
+        border-radius: 8px !important;
+        gap: 6px !important;
+        min-width: 0 !important;
+        overflow: hidden !important;
     }
     .cat-quick-chip__thumb {
-        width: 38px !important;
-        height: 38px !important;
-        min-width: 38px !important;
+        width: 36px !important;
+        height: 36px !important;
+        min-width: 36px !important;
     }
+    .cat-quick-chip__meta {
+        min-width: 0 !important;
+        overflow: hidden !important;
+        flex: 1 !important;
+    }
+    .cat-quick-chip__name,
     .cat-quick-chip__title {
-        font-size: 11.5px !important;
+        font-size: 11px !important;
         line-height: 1.25 !important;
+        white-space: normal !important;
+        display: -webkit-box !important;
+        -webkit-line-clamp: 2 !important;
+        -webkit-box-orient: vertical !important;
+        overflow: hidden !important;
     }
+    .cat-quick-chip__sub,
     .cat-quick-chip__desc {
         display: none !important;
     }

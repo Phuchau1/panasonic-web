@@ -53,7 +53,7 @@ $navSeries     = $navSeries ?? (new ProductSeries())->active();
         window.BASE_URL = window.APP.baseUrl;
     </script>
 </head>
-<body>
+<body class="<?= !empty($bodyClass) ? e($bodyClass) : '' ?>">
 <a class="skip-link" href="#main-content">Bỏ qua tới nội dung chính</a>
 
 <!-- ==================== HEADER DOANH NGHIỆP PANASONIC (3-TIER PROFESSIONAL) ==================== -->
