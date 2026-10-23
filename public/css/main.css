@@ -86,6 +86,7 @@
 html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
+    overflow-x: hidden;
 }
 
 body {
@@ -97,6 +98,8 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    overflow-x: hidden;
+    width: 100%;
 }
 
 img, svg {
@@ -6826,6 +6829,7 @@ button, input, select, textarea {
    ========================================================================== */
 .user-profile-page {
     padding: 2.5rem 1rem 4rem 1rem;
+    max-width: 100%;
 }
 
 .user-profile-layout {
@@ -6833,6 +6837,14 @@ button, input, select, textarea {
     grid-template-columns: 280px 1fr;
     gap: 2rem;
     align-items: start;
+    min-width: 0;
+    max-width: 100%;
+}
+
+.user-sidebar,
+.user-main-content {
+    min-width: 0;
+    max-width: 100%;
 }
 
 .user-sidebar__card {
@@ -6842,6 +6854,10 @@ button, input, select, textarea {
     padding: 1.75rem 1.25rem;
     text-align: center;
     box-shadow: var(--shadow-sm);
+}
+
+.user-sidebar__profile-row {
+    display: block;
 }
 
 .user-avatar-wrap {
@@ -6947,6 +6963,8 @@ button, input, select, textarea {
     border-radius: var(--radius-lg);
     padding: 2rem;
     box-shadow: var(--shadow-sm);
+    min-width: 0;
+    max-width: 100%;
 }
 
 .profile-box-title {
@@ -6995,9 +7013,11 @@ button, input, select, textarea {
     background: var(--primary-dark);
 }
 
-/* User Orders Table */
+/* User Orders Table (Desktop) */
 .orders-table-wrap {
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
 }
 
 .user-orders-table {
@@ -7062,6 +7082,131 @@ button, input, select, textarea {
     text-decoration: underline;
 }
 
+/* User Order Cards (Mobile) */
+.orders-cards-mobile {
+    display: none;
+}
+
+.user-order-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    text-align: left;
+}
+
+.user-order-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.65rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.user-order-card__code {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.92rem;
+    color: #0f172a;
+}
+
+.user-order-card__code .order-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+}
+
+.user-order-card__code strong {
+    color: #004098;
+    font-weight: 700;
+}
+
+.user-order-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    font-size: 0.82rem;
+}
+
+.user-order-card__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.card-item-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: #64748b;
+    font-size: 0.8rem;
+}
+
+.card-item-label svg {
+    width: 14px;
+    height: 14px;
+    color: #94a3b8;
+}
+
+.card-item-val {
+    color: #1e293b;
+    text-align: right;
+    font-weight: 500;
+}
+
+.user-order-card__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 0.75rem;
+    border-top: 1px dashed #e2e8f0;
+}
+
+.user-order-card__total {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-order-card__total small {
+    font-size: 0.7rem;
+    color: #64748b;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.user-order-card__total .order-price {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #004098;
+}
+
+.btn-order-view-card {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.45rem 0.85rem;
+    background: #eff6ff;
+    color: #004098;
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-order-view-card:hover {
+    background: #004098;
+    color: #ffffff;
+}
+
 .empty-orders-box {
     text-align: center;
     padding: 3rem 1rem;
@@ -7103,11 +7248,146 @@ button, input, select, textarea {
 }
 
 @media (max-width: 860px) {
-    .user-profile-layout {
-        grid-template-columns: 1fr;
+    .user-profile-page {
+        padding: 1rem 0.75rem 3rem 0.75rem;
     }
+
+    .user-profile-layout {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .user-sidebar__card {
+        padding: 1rem;
+        text-align: left;
+    }
+
+    .user-sidebar__profile-row {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        margin-bottom: 0.85rem;
+    }
+
+    .user-avatar-wrap {
+        margin-bottom: 0;
+        flex-shrink: 0;
+    }
+
+    .profile-avatar,
+    .profile-avatar-initial {
+        width: 54px;
+        height: 54px;
+        font-size: 1.35rem;
+        margin: 0;
+    }
+
+    .user-sidebar__profile-meta {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .profile-name {
+        font-size: 1.05rem;
+        margin: 0 0 0.15rem 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .profile-badge {
+        margin-bottom: 0.25rem;
+        font-size: 0.7rem;
+    }
+
+    .profile-email {
+        font-size: 0.78rem;
+        margin: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .user-sidebar__nav {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.45rem;
+        padding-top: 0.85rem;
+    }
+
+    .user-sidebar__nav .user-nav-item {
+        padding: 0.6rem 0.5rem;
+        font-size: 0.8rem;
+        justify-content: center;
+        text-align: center;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+    }
+
+    .user-sidebar__nav .user-nav-item.is-active {
+        background: #004098;
+        color: #ffffff;
+        border-color: #004098;
+    }
+
+    .user-sidebar__nav .btn-profile-logout {
+        grid-column: span 2;
+        margin-top: 0.2rem;
+        padding-top: 0.45rem;
+        border-top: 1px dashed #e2e8f0;
+        background: transparent;
+        border: none;
+        color: #ef4444;
+        font-size: 0.82rem;
+    }
+
+    .profile-box {
+        padding: 1.25rem 1rem;
+        border-radius: 12px;
+    }
+
+    .profile-box-title {
+        font-size: 1.1rem;
+    }
+
+    .profile-box-desc {
+        font-size: 0.82rem;
+        margin-bottom: 1.25rem;
+    }
+
     .profile-form-grid {
         grid-template-columns: 1fr;
+        gap: 0.9rem;
+    }
+
+    .btn-profile-save {
+        width: 100%;
+        justify-content: center;
+        padding: 0.75rem;
+    }
+
+    /* Orders display on mobile */
+    .orders-table-desktop {
+        display: none !important;
+    }
+
+    .orders-cards-mobile {
+        display: flex !important;
+        flex-direction: column;
+        gap: 0.85rem;
+    }
+}
+
+@media (min-width: 861px) {
+    .orders-table-desktop {
+        display: block !important;
+    }
+    .orders-cards-mobile {
+        display: none !important;
     }
 }
 
