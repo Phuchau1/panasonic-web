@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <filter id="shadow-w" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <rect width="400" height="400" fill="#f8fafc"/>
+  <!-- Switch Frame 120x70 mm (Wide Series) -->
+  <rect x="100" y="50" width="200" height="300" rx="12" fill="#ffffff" stroke="#e2e8f0" stroke-width="2" filter="url(#shadow-w)"/>
+  <!-- Switch Key S -->
+  <rect x="125" y="140" width="150" height="120" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+  <rect x="195" y="235" width="10" height="4" rx="2" fill="#10b981"/>
+  <text x="200" y="380" font-family="sans-serif" font-size="14" font-weight="700" fill="#64748b" text-anchor="middle">PANASONIC WIDE SERIES (WEV5001SW)</text>
+</svg>

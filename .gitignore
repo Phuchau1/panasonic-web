@@ -1,0 +1,29 @@
+# Composer / Vendor
+/vendor/
+
+# Storage & Cache
+/storage/cache/*
+!/storage/cache/.gitkeep
+/storage/logs/*
+!/storage/logs/.gitkeep
+/storage/emails/*
+!/storage/emails/.gitkeep
+
+# Local & OS Files
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.bak
+.idea/
+.vscode/
+
+# Local database dumps or archives (not needed in git, we keep database_deploy.sql)
+panasonic_deploy.zip
+*.zip
+check_loc.php
+test_*.php
+check_*.php
+list_*.php
+generate_*.php
+fix_*.php

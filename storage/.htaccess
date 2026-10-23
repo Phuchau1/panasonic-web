@@ -1,0 +1,2 @@
+# Chặn hoàn toàn truy cập web vào thư mục lưu file khách hàng
+Require all denied

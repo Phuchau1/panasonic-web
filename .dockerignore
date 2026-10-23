@@ -1,0 +1,9 @@
+.git
+.gitignore
+.idea
+.vscode
+*.zip
+storage/cache/*
+storage/logs/*
+storage/emails/*
+*.log

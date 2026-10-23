@@ -1,0 +1,717 @@
+/**
+ * PANASONIC ELECTRIC PRO - RESPONSIVE STYLESHEET
+ * Tối ưu 100% hiển thị trên điện thoại, máy tính bảng và màn hình siêu rộng.
+ */
+
+/* Drawer Navigation di động */
+.drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 998;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s;
+}
+
+.drawer-backdrop.is-active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 320px;
+    max-width: 85vw;
+    background: #ffffff;
+    z-index: 999;
+    box-shadow: 10px 0 25px rgba(0, 0, 0, 0.15);
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.drawer.is-active {
+    transform: translateX(0);
+}
+
+.drawer__head {
+    padding: 1.25rem;
+    background: var(--slate-900);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.drawer__close {
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.drawer__body {
+    padding: 1.25rem;
+    flex: 1;
+}
+
+.drawer__label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--slate-400);
+    margin: 1.25rem 0 0.5rem;
+}
+.drawer__label:first-child { margin-top: 0; }
+
+.drawer__list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.drawer__list a {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 0.5rem;
+    border-radius: var(--radius-md);
+    color: var(--slate-800);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.drawer__list a:hover {
+    background: var(--slate-100);
+    color: var(--primary);
+}
+
+.drawer__count {
+    margin-left: auto;
+    font-size: 0.75rem;
+    background: var(--slate-100);
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    color: var(--slate-500);
+}
+
+.drawer__series {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.drawer__foot {
+    padding: 1.25rem;
+    background: var(--slate-50);
+    border-top: 1px solid var(--slate-200);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Nút Burger trên Header */
+.header__burger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--slate-800);
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+@media (min-width: 992px) {
+    .header__burger { display: none; }
+}
+
+/* Nút gọi nổi (Floating Action Button) */
+.fab {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 1.5rem;
+    z-index: 90;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.fab__btn {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    text-decoration: none;
+    font-size: 1.25rem;
+    transition: transform 0.2s ease;
+}
+
+.fab__btn:hover {
+    transform: scale(1.1);
+}
+
+.fab__btn--call {
+    background: #059669;
+}
+
+.fab__btn--zalo {
+    background: #0068ff;
+    font-size: 0.75rem;
+    font-weight: 800;
+}
+
+/* Nút cuộn lên đầu trang */
+.back-top {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 40px;
+    height: 40px;
+    background: var(--slate-800);
+    color: #ffffff;
+    border: none;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+    transform: rotate(180deg);
+    z-index: 80;
+}
+
+.back-top.is-visible {
+    opacity: 0.85;
+    visibility: visible;
+}
+.back-top:hover {
+    opacity: 1;
+    background: var(--primary);
+}
+
+/* -------------------------------------------------------------
+   RESPONSIVE BREAKPOINTS
+   ------------------------------------------------------------- */
+
+/* Tablet & Mobile (< 992px) */
+@media (max-width: 991.98px) {
+    .hide-md { display: none !important; }
+    
+    .hero__inner {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        padding-top: 2.5rem;
+        padding-bottom: 2.5rem;
+        text-align: center;
+    }
+    .hero__content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .hero__title {
+        font-size: 2.15rem;
+    }
+    .hero__specs {
+        justify-content: center;
+    }
+    .hero-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin-top: 0;
+    }
+    .hero-stats__item {
+        border-right: none;
+        border-bottom: 1px solid var(--slate-200);
+        padding-bottom: 0.5rem;
+    }
+    .hero-stats__item:nth-child(3), .hero-stats__item:nth-child(4) {
+        border-bottom: none;
+    }
+
+    .mcb-tool {
+        grid-template-columns: 1fr;
+    }
+
+    .bom-banner {
+        grid-template-columns: 1fr;
+        padding: 2rem;
+    }
+
+    .catalog-layout {
+        grid-template-columns: 1fr;
+    }
+    .catalog-sidebar {
+        display: none; /* Hiển thị qua modal drawer trên mobile */
+    }
+    .catalog-sidebar.is-open {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        overflow-y: auto;
+        border-radius: 0;
+    }
+
+    .product-detail {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .cart-layout,
+    .cart-grid-container {
+        grid-template-columns: 1fr;
+    }
+
+    .footer__grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+}
+
+/* Mobile Devices (< 768px) */
+@media (max-width: 767.98px) {
+    .hide-sm { display: none !important; }
+    
+    .section {
+        padding-top: 1.5rem;
+        padding-bottom: 1.5rem;
+    }
+    .section__title {
+        font-size: 1.25rem;
+    }
+
+    .container {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .header__inner {
+        height: 54px;
+        gap: 8px;
+    }
+    .logo__mark {
+        font-size: 1.25rem;
+    }
+    .logo__sub {
+        font-size: 0.65rem;
+    }
+    .search {
+        margin: 0;
+    }
+    .search__input {
+        height: 36px;
+        font-size: 12px;
+        padding-left: 2rem;
+    }
+    .search__btn {
+        padding: 0 10px;
+        font-size: 12px;
+    }
+
+    /* Quick category icons mobile (3x4 grid) */
+    .quick-cat-grid {
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 6px !important;
+    }
+    .quick-cat-card {
+        padding: 6px 2px !important;
+        border-radius: 4px !important;
+    }
+    .quick-cat-img {
+        width: 48px !important;
+        height: 48px !important;
+        margin-bottom: 3px !important;
+    }
+    .quick-cat-title {
+        font-size: 10.5px !important;
+        line-height: 1.2 !important;
+    }
+
+    /* Banner đầu trang trên di động */
+    .promo-banner-main {
+        padding: 12px 14px !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+    }
+    .promo-text h1 {
+        font-size: 16px !important;
+    }
+    .promo-text p {
+        font-size: 12px !important;
+        margin-bottom: 8px !important;
+    }
+    .promo-actions {
+        flex-direction: column !important;
+        gap: 6px !important;
+        width: 100% !important;
+    }
+    .promo-actions .btn-primary, .promo-actions .btn-secondary {
+        text-align: center !important;
+        padding: 7px !important;
+        font-size: 12px !important;
+    }
+    .promo-stats {
+        width: 100% !important;
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 6px !important;
+    }
+    .stat-box {
+        min-width: unset !important;
+        padding: 6px 4px !important;
+    }
+    .stat-box strong {
+        font-size: 14px !important;
+    }
+    .stat-box span {
+        font-size: 10px !important;
+    }
+
+    /* Category Showcase Headers trên mobile */
+    .category-block-header {
+        margin-top: 14px !important;
+        margin-bottom: 4px !important;
+    }
+    .cat-block-title {
+        font-size: 12.5px !important;
+        padding: 3px 12px 3px 8px !important;
+    }
+    .cat-block-title::after {
+        border-width: 12px 0 12px 10px !important;
+    }
+    .cat-block-more {
+        font-size: 11.5px !important;
+    }
+    .cat-block-bullets {
+        font-size: 11.5px !important;
+        margin-bottom: 6px !important;
+    }
+
+    /* Lưới sản phẩm 2 cột chuẩn mobile */
+    .product-grid-5, .product-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+    }
+
+    /* Thẻ sản phẩm mobile - Ảnh to rõ, không co cụm, không hiệu ứng động */
+    .product-card {
+        padding: 6px 8px 8px !important;
+        border-radius: 4px !important;
+        border: 1px solid #e2e8f0 !important;
+        transition: none !important;
+        transform: none !important;
+    }
+    .product-card__media {
+        height: 145px !important;
+        min-height: unset !important;
+        padding: 4px !important;
+    }
+    .product-card__img img {
+        max-height: 135px !important;
+        max-width: 100% !important;
+        transition: none !important;
+        transform: none !important;
+    }
+    .product-card__body {
+        padding: 4px 0 0 !important;
+    }
+    .product-card__meta .model-code {
+        font-size: 10px !important;
+    }
+    .product-card__meta .product-card__series {
+        font-size: 10px !important;
+    }
+    .product-card__title {
+        font-size: 12px !important;
+        line-height: 1.35 !important;
+        height: 32px !important;
+        margin: 3px 0 2px !important;
+    }
+    .product-card__price .price-val {
+        font-size: 13.5px !important;
+    }
+    .product-card__price .price-wholesale {
+        font-size: 10px !important;
+    }
+    .product-card__actions {
+        padding: 4px 0 0 !important;
+        margin-top: 3px !important;
+    }
+    .product-card__actions .btn-buy {
+        font-size: 11px !important;
+        padding: 5px 4px !important;
+    }
+
+    /* MCB Calculator & BOM Box trên mobile */
+    .calc-row, .calc-results-row {
+        grid-template-columns: 1fr !important;
+        gap: 8px !important;
+    }
+    .bom-box {
+        padding: 14px !important;
+        flex-direction: column !important;
+    }
+    .bom-info h3 {
+        font-size: 15px !important;
+    }
+    .btn-bom {
+        width: 100% !important;
+        text-align: center !important;
+        padding: 10px !important;
+        font-size: 13px !important;
+    }
+
+    .footer__grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding-top: 1.5rem;
+        padding-bottom: 1.5rem;
+    }
+    .footer__bottom-inner {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+    }
+}
+
+
+/* Responsive Category Overview */
+@media (max-width: 1100px) {
+    .cat-section-block__grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    .cat-hero {
+        grid-template-columns: 1fr;
+    }
+}
+@media (max-width: 768px) {
+    .cat-section-block__grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+    }
+    .cat-series-bar__grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 0.5rem !important;
+    }
+    .cat-hero {
+        padding: 1rem !important;
+    }
+    .cat-section-block {
+        padding: 1rem !important;
+    }
+    .ribbon-text {
+        font-size: 0.825rem !important;
+    }
+}
+
+
+/* Responsive Product Detail */
+@media (max-width: 1100px) {
+    .product-detail-layout {
+        grid-template-columns: 340px 1fr !important;
+    }
+    .pdetail-sidebar {
+        grid-column: span 2;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .product-detail-layout {
+        grid-template-columns: 1fr !important;
+        gap: 1.25rem !important;
+    }
+    .pdetail-sidebar {
+        grid-column: span 1;
+        display: flex;
+        flex-direction: column;
+    }
+    .pdetail-cta-row {
+        grid-template-columns: 1fr !important;
+    }
+    .pdetail-title {
+        font-size: 1.2rem !important;
+    }
+    .pdetail-price-current {
+        font-size: 1.4rem !important;
+    }
+    .pbody-content {
+        padding: 1.25rem !important;
+    }
+    .technical-drawing-grid,
+    .genuine-comparison-grid,
+    .contact-cards-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+
+/* Responsive Corporate Header */
+@media (max-width: 991px) {
+    .header-mainbar {
+        padding: 0.5rem 0 !important;
+    }
+    .header-mainbar__inner {
+        gap: 0.75rem !important;
+    }
+    .corp-logo__brand {
+        font-size: 1.4rem !important;
+    }
+    .corp-logo__sub {
+        font-size: 0.5rem !important;
+    }
+    .corp-search-wrapper {
+        min-width: 0 !important;
+    }
+    .corp-search-input-box {
+        border-width: 1.5px !important;
+    }
+    .corp-search-input {
+        height: 38px !important;
+        font-size: 0.8rem !important;
+    }
+    .corp-search-submit-btn {
+        height: 38px !important;
+        padding: 0 0.75rem !important;
+    }
+    .corp-search-submit-btn span {
+        display: none !important;
+    }
+    .corp-trust-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+    .smart-sticky-inner {
+        height: 50px;
+    }
+    .sticky-logo .mark {
+        font-size: 1.2rem;
+    }
+    .hero-slide {
+        padding: 2rem 1.5rem;
+    }
+    .hero-slide__inner {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem;
+        text-align: center;
+    }
+    .hero-slide__content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .hero-slide__title {
+        font-size: 1.75rem !important;
+    }
+    .hero-slide__chips {
+        justify-content: center;
+    }
+    .hero-slide__actions {
+        justify-content: center;
+    }
+    .hero-visual-card {
+        max-width: 240px !important;
+        margin: 0 auto;
+    }
+    .hero-slider-nav {
+        display: none !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-slide {
+        padding: 1.75rem 1rem !important;
+    }
+    .hero-slide__title {
+        font-size: 1.4rem !important;
+    }
+    .hero-slide__desc {
+        font-size: 0.85rem !important;
+    }
+    .btn-hero-primary, .btn-hero-secondary {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Responsive Category Overview */
+@media (max-width: 991px) {
+    .cat-corp-hero__inner {
+        grid-template-columns: 1fr !important;
+        gap: 1.25rem !important;
+        padding: 1.25rem !important;
+    }
+    .cat-corp-hero__media {
+        width: 100% !important;
+    }
+    .cat-corp-hero__title {
+        font-size: 1.35rem !important;
+    }
+    .cat-showcase-frame {
+        max-height: 200px !important;
+    }
+    .cat-showcase-img {
+        height: 160px !important;
+    }
+    .cat-section-card__grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .cat-corp-trust-grid {
+        grid-template-columns: 1fr !important;
+    }
+    .cat-quick-nav__grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+    .cat-section-card__head {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.75rem !important;
+    }
+    .cat-head-more-btn {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+    .cat-section-card__grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .cat-quick-nav__grid {
+        grid-template-columns: 1fr !important;
+    }
+    .cat-corp-hero__actions {
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+    .btn-corp-act {
+        width: 100% !important;
+    }
+}

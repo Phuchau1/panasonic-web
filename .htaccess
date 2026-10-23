@@ -1,0 +1,18 @@
+# =====================================================================
+#  .htaccess gốc – chuyển toàn bộ request vào thư mục /public
+#  Giúp chạy được khi đặt project trong htdocs/panasonic (XAMPP/WAMP)
+#  và ngăn truy cập trực tiếp app/, core/, config/, storage/, database.sql
+# =====================================================================
+Options -Indexes -MultiViews
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Đã nằm trong public/ thì bỏ qua (tránh vòng lặp)
+    RewriteCond %{REQUEST_URI} !/public/
+    RewriteRule ^(.*)$ public/$1 [L,QSA]
+</IfModule>
+
+<FilesMatch "\.(sql|env|ini|log|md)$">
+    Require all denied
+</FilesMatch>

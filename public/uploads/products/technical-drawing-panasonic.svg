@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 380" width="100%" height="100%">
+  <defs>
+    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#f1f5f9" stroke-width="1"/>
+    </pattern>
+    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#004098"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="#ffffff" />
+  <rect width="100%" height="100%" fill="url(#grid)" />
+  <rect x="10" y="10" width="580" height="360" rx="8" fill="none" stroke="#cbd5e1" stroke-width="1.5" />
+
+  <!-- Title & Specs Header -->
+  <text x="30" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="15" font-weight="800" fill="#004098">BẢN VẼ KÍCH THƯỚC TIÊU CHUẨN PANASONIC (ĐƠN VỊ: mm)</text>
+  <text x="30" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" fill="#64748b">Tiêu chuẩn kỹ thuật JIS C 8370 / IEC 60669-1 / IEC 60898-1</text>
+
+  <!-- Left: Front View -->
+  <g transform="translate(60, 85)">
+    <!-- Outer Faceplate (120 x 70) -->
+    <rect x="0" y="0" width="160" height="230" rx="12" fill="#f8fafc" stroke="#334155" stroke-width="2.5" />
+    <rect x="6" y="6" width="148" height="218" rx="8" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 3" />
+    
+    <!-- Mounting Frame Aperture -->
+    <rect x="25" y="45" width="110" height="140" rx="4" fill="#ffffff" stroke="#004098" stroke-width="1.8" />
+    
+    <!-- Module Switch/Socket insert -->
+    <rect x="40" y="65" width="80" height="48" rx="3" fill="#f1f5f9" stroke="#64748b" stroke-width="1.5" />
+    <rect x="40" y="125" width="80" height="48" rx="3" fill="#f1f5f9" stroke="#64748b" stroke-width="1.5" />
+    
+    <!-- Panasonic Logo Mark -->
+    <text x="80" y="28" font-family="Arial, sans-serif" font-size="11" font-weight="900" fill="#004098" text-anchor="middle" letter-spacing="1">Panasonic</text>
+    <text x="80" y="215" font-family="Arial, sans-serif" font-size="8" font-weight="700" fill="#94a3b8" text-anchor="middle">16A 250V~</text>
+
+    <!-- Mounting screw centers -->
+    <circle cx="80" cy="38" r="3.5" fill="none" stroke="#334155" stroke-width="1.5" />
+    <circle cx="80" cy="192" r="3.5" fill="none" stroke="#334155" stroke-width="1.5" />
+
+    <!-- Front Dimensions -->
+    <!-- Width Dimension (70mm) -->
+    <line x1="0" y1="245" x2="160" y2="245" stroke="#004098" stroke-width="1.2" marker-start="url(#arrow)" marker-end="url(#arrow)" />
+    <text x="80" y="258" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#004098" text-anchor="middle">70 mm</text>
+
+    <!-- Height Dimension (120mm) -->
+    <line x1="-15" y1="0" x2="-15" y2="230" stroke="#004098" stroke-width="1.2" marker-start="url(#arrow)" marker-end="url(#arrow)" />
+    <text x="-25" y="120" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#004098" text-anchor="middle" transform="rotate(-90, -25, 120)">120 mm</text>
+
+    <!-- Screw Distance (83.5mm) -->
+    <line x1="172" y1="38" x2="172" y2="192" stroke="#dc2626" stroke-width="1.2" stroke-dasharray="2 2" marker-start="url(#arrow)" marker-end="url(#arrow)" />
+    <text x="180" y="120" font-family="Arial, sans-serif" font-size="10.5" font-weight="700" fill="#dc2626" text-anchor="middle" transform="rotate(90, 180, 120)">83.5 mm</text>
+  </g>
+
+  <!-- Right: Side / Sectional View -->
+  <g transform="translate(360, 85)">
+    <!-- Faceplate profile -->
+    <path d="M 40 0 L 50 0 L 50 230 L 40 230 Z" fill="#f8fafc" stroke="#334155" stroke-width="2" />
+    <!-- Rear housing module -->
+    <path d="M 50 40 L 125 40 L 125 190 L 50 190 Z" fill="#ffffff" stroke="#004098" stroke-width="2" />
+    
+    <!-- Wiring terminals with screw heads -->
+    <circle cx="110" cy="65" r="4" fill="#f59e0b" stroke="#334155" stroke-width="1" />
+    <line x1="107" y1="65" x2="113" y2="65" stroke="#334155" stroke-width="1.5" />
+    <circle cx="110" cy="165" r="4" fill="#f59e0b" stroke="#334155" stroke-width="1" />
+    <line x1="107" y1="165" x2="113" y2="165" stroke="#334155" stroke-width="1.5" />
+    
+    <!-- Depth Dimension Total (34mm) -->
+    <line x1="40" y1="245" x2="125" y2="245" stroke="#004098" stroke-width="1.2" marker-start="url(#arrow)" marker-end="url(#arrow)" />
+    <text x="82.5" y="258" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#004098" text-anchor="middle">34 mm</text>
+
+    <!-- Plate thickness (8.5mm) -->
+    <line x1="40" y1="-10" x2="50" y2="-10" stroke="#004098" stroke-width="1" marker-start="url(#arrow)" marker-end="url(#arrow)" />
+    <text x="45" y="-18" font-family="Arial, sans-serif" font-size="10" font-weight="700" fill="#004098" text-anchor="middle">8.5mm</text>
+
+    <!-- Side View Labels -->
+    <text x="85" y="115" font-family="Arial, sans-serif" font-size="9" fill="#64748b" text-anchor="middle">Hộp đế âm tường</text>
+    <text x="85" y="130" font-family="Arial, sans-serif" font-size="9" font-weight="700" fill="#004098" text-anchor="middle">Độ sâu ≥ 40mm</text>
+  </g>
+</svg>

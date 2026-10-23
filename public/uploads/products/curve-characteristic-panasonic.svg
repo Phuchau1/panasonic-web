@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 380" width="100%" height="100%">
+  <defs>
+    <pattern id="gridCurve" width="25" height="25" patternUnits="userSpaceOnUse">
+      <path d="M 25 0 L 0 0 0 25" fill="none" stroke="#f1f5f9" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="#ffffff" />
+  <rect width="100%" height="100%" fill="url(#gridCurve)" />
+  <rect x="10" y="10" width="580" height="360" rx="8" fill="none" stroke="#cbd5e1" stroke-width="1.5" />
+
+  <!-- Title -->
+  <text x="30" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="15" font-weight="800" fill="#004098">BIỂU ĐỒ ĐẶC TÍNH BẢO VỆ (TRIPPING CHARACTERISTIC CURVE)</text>
+  <text x="30" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" fill="#64748b">Tiêu chuẩn IEC 60898-1 / C Curve (5 In ~ 10 In) - Cầu dao tự động Panasonic</text>
+
+  <!-- Graph Axis Group -->
+  <g transform="translate(70, 75)">
+    <!-- Y-Axis (Time t in seconds) -->
+    <line x1="0" y1="0" x2="0" y2="240" stroke="#334155" stroke-width="2" />
+    <!-- X-Axis (Multiple of rated current I / In) -->
+    <line x1="0" y1="240" x2="480" y2="240" stroke="#334155" stroke-width="2" />
+
+    <!-- Grid lines horizontal -->
+    <line x1="0" y1="40" x2="480" y2="40" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="2 2" />
+    <line x1="0" y1="100" x2="480" y2="100" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="2 2" />
+    <line x1="0" y1="160" x2="480" y2="160" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="2 2" />
+
+    <!-- Grid lines vertical -->
+    <line x1="100" y1="0" x2="100" y2="240" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="2 2" />
+    <line x1="200" y1="0" x2="200" y2="240" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="2 2" />
+    <line x1="300" y1="0" x2="300" y2="240" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="2 2" />
+    <line x1="400" y1="0" x2="400" y2="240" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="2 2" />
+
+    <!-- Y labels -->
+    <text x="-10" y="45" font-family="Arial, sans-serif" font-size="10" fill="#64748b" text-anchor="end">1000s</text>
+    <text x="-10" y="105" font-family="Arial, sans-serif" font-size="10" fill="#64748b" text-anchor="end">10s</text>
+    <text x="-10" y="165" font-family="Arial, sans-serif" font-size="10" fill="#64748b" text-anchor="end">0.1s</text>
+    <text x="-10" y="235" font-family="Arial, sans-serif" font-size="10" fill="#64748b" text-anchor="end">0.01s</text>
+    <text x="-35" y="120" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#334155" text-anchor="middle" transform="rotate(-90, -35, 120)">Thời gian ngắt (t)</text>
+
+    <!-- X labels -->
+    <text x="0" y="255" font-family="Arial, sans-serif" font-size="10" fill="#64748b" text-anchor="middle">1</text>
+    <text x="100" y="255" font-family="Arial, sans-serif" font-size="10" fill="#64748b" text-anchor="middle">2</text>
+    <text x="200" y="255" font-family="Arial, sans-serif" font-size="10" fill="#64748b" text-anchor="middle">3</text>
+    <text x="300" y="255" font-family="Arial, sans-serif" font-size="10" fill="#64748b" text-anchor="middle">5</text>
+    <text x="400" y="255" font-family="Arial, sans-serif" font-size="10" fill="#64748b" text-anchor="middle">10</text>
+    <text x="470" y="255" font-family="Arial, sans-serif" font-size="10" fill="#64748b" text-anchor="middle">20</text>
+    <text x="240" y="272" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#334155" text-anchor="middle">Bội số dòng điện danh định (I / In)</text>
+
+    <!-- Shaded Tripping Band Area -->
+    <path d="M 50 10 Q 70 80 140 140 L 220 180 L 220 230 L 320 230 L 320 170 Q 180 120 100 10 Z" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5" />
+    
+    <!-- Tripping curve boundaries -->
+    <!-- Min curve -->
+    <path d="M 50 10 Q 70 80 140 140 L 220 180 L 220 230" fill="none" stroke="#004098" stroke-width="2.5" />
+    <!-- Max curve -->
+    <path d="M 100 10 Q 180 120 320 170 L 320 230" fill="none" stroke="#dc2626" stroke-width="2.5" />
+
+    <!-- Thermal zone label -->
+    <rect x="70" y="45" width="130" height="32" rx="4" fill="#ffffff" stroke="#004098" stroke-width="1" />
+    <text x="135" y="60" font-family="Arial, sans-serif" font-size="9.5" font-weight="700" fill="#004098" text-anchor="middle">VÙNG BẢO VỆ QUÁ TẢI</text>
+    <text x="135" y="72" font-family="Arial, sans-serif" font-size="8.5" fill="#64748b" text-anchor="middle">Ngắt bằng thanh lưỡng kim nhiệt</text>
+
+    <!-- Magnetic zone label -->
+    <rect x="250" y="195" width="155" height="32" rx="4" fill="#ffffff" stroke="#dc2626" stroke-width="1" />
+    <text x="327" y="209" font-family="Arial, sans-serif" font-size="9.5" font-weight="700" fill="#dc2626" text-anchor="middle">VÙNG BẢO VỆ NGẮN MẠCH</text>
+    <text x="327" y="221" font-family="Arial, sans-serif" font-size="8.5" fill="#64748b" text-anchor="middle">Ngắt tức thì bằng cuộn điện từ (5 - 10 In)</text>
+  </g>
+</svg>
