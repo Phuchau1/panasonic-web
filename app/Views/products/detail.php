@@ -267,10 +267,12 @@ $originalPrice = (int) ($product['price'] > 0 ? ($product['price'] / (1 - ($disc
             <!-- Tab Gộp Duy Nhất: Mô Tả Chi Tiết & Thông Số Kỹ Thuật -->
             <div id="tab-desc" class="pbody-pane is-active">
                 <!-- Bảng Thông Số Kỹ Thuật Chi Tiết -->
-                <div class="specs-table-wrapper" style="margin-bottom: 2.25rem;">
-                    <h3 class="specs-table-caption" style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.15rem; font-weight: 800; color: #004098; margin-bottom: 1rem;">
-                        <?= icon('settings') ?> Thông Số Kỹ Thuật - <?= e($product['name']) ?>
-                    </h3>
+                <div class="specs-table-wrapper">
+                    <div class="specs-table-head">
+                        <span class="specs-head-icon"><?= icon('settings') ?></span>
+                        <h3 class="specs-head-title">Thông Số Kỹ Thuật Chi Tiết</h3>
+                        <span class="specs-head-badge">Chính Hãng Panasonic</span>
+                    </div>
                     <table class="specs-modern-table">
                         <tbody>
                             <tr>
