@@ -8,7 +8,7 @@ $navSeries     = $navSeries ?? (new ProductSeries())->active();
 ?>
 
 <!-- ==================== MOBILE DRAWER NAVIGATION ==================== -->
-<div class="drawer-backdrop" data-drawer-close hidden></div>
+<div class="drawer-backdrop" data-drawer-close></div>
 <aside class="drawer" id="mobileDrawer" aria-label="Menu di động" aria-hidden="true" tabindex="-1">
     <div class="drawer__head">
         <a href="<?= url('/') ?>" class="logo logo--light">

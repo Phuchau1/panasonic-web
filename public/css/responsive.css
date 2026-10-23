@@ -7,17 +7,19 @@
 .drawer-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(15, 23, 42, 0.6);
+    background: rgba(15, 23, 42, 0.65);
     backdrop-filter: blur(4px);
-    z-index: 998;
+    z-index: 99998;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s;
+    pointer-events: none;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 .drawer-backdrop.is-active {
     opacity: 1;
     visibility: visible;
+    pointer-events: auto;
 }
 
 .drawer {
@@ -25,16 +27,17 @@
     top: 0;
     left: 0;
     bottom: 0;
-    width: 320px;
-    max-width: 85vw;
+    width: 310px;
+    max-width: 82vw;
     background: #ffffff;
-    z-index: 999;
-    box-shadow: 10px 0 25px rgba(0, 0, 0, 0.15);
+    z-index: 99999;
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.25);
     transform: translateX(-100%);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     flex-direction: column;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .drawer.is-active {
@@ -140,33 +143,35 @@
     .header__burger { display: none; }
 }
 
-/* Nút gọi nổi (Floating Action Button) */
+/* Nút gọi nổi (Floating Action Button) - Bố trí góc dưới phải thông minh, không che khuất sản phẩm */
 .fab {
     position: fixed;
-    bottom: 1.5rem;
-    left: 1.5rem;
-    z-index: 90;
+    bottom: 68px;
+    right: 14px;
+    left: auto;
+    z-index: 990;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 8px;
+    align-items: center;
 }
 
 .fab__btn {
-    width: 48px;
-    height: 48px;
-    border-radius: var(--radius-full);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #ffffff;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
     text-decoration: none;
-    font-size: 1.25rem;
-    transition: transform 0.2s ease;
+    font-size: 1.15rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .fab__btn:hover {
-    transform: scale(1.1);
+    transform: scale(1.08);
 }
 
 .fab__btn--call {
@@ -175,31 +180,32 @@
 
 .fab__btn--zalo {
     background: #0068ff;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 800;
+    letter-spacing: 0.3px;
 }
 
 /* Nút cuộn lên đầu trang */
 .back-top {
     position: fixed;
-    bottom: 1.5rem;
-    right: 1.5rem;
-    width: 40px;
-    height: 40px;
+    bottom: 16px;
+    right: 16px;
+    width: 38px;
+    height: 38px;
     background: var(--slate-800);
     color: #ffffff;
     border: none;
-    border-radius: var(--radius-full);
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
     opacity: 0;
     visibility: hidden;
     transition: var(--transition);
     transform: rotate(180deg);
-    z-index: 80;
+    z-index: 989;
 }
 
 .back-top.is-visible {
@@ -331,23 +337,34 @@
         font-size: 12px;
     }
 
-    /* Quick category icons mobile (3x4 grid) */
+    /* Quick category icons mobile (3 cột cân đối chuẩn doanh nghiệp như Shopee/TGDD) */
     .quick-cat-grid {
-        grid-template-columns: repeat(4, 1fr) !important;
-        gap: 6px !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 8px !important;
+        margin-top: 10px !important;
+        margin-bottom: 16px !important;
     }
     .quick-cat-card {
-        padding: 6px 2px !important;
-        border-radius: 4px !important;
+        padding: 8px 4px !important;
+        border-radius: 8px !important;
+        border: 1px solid #e2e8f0 !important;
+        background: #ffffff !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.03) !important;
     }
     .quick-cat-img {
-        width: 48px !important;
-        height: 48px !important;
-        margin-bottom: 3px !important;
+        width: 58px !important;
+        height: 58px !important;
+        margin-bottom: 6px !important;
     }
     .quick-cat-title {
-        font-size: 10.5px !important;
-        line-height: 1.2 !important;
+        font-size: 11.5px !important;
+        font-weight: 600 !important;
+        line-height: 1.25 !important;
+        min-height: 28px !important;
+        display: -webkit-box !important;
+        -webkit-line-clamp: 2 !important;
+        -webkit-box-orient: vertical !important;
+        overflow: hidden !important;
     }
 
     /* Banner đầu trang trên di động */
@@ -392,22 +409,31 @@
 
     /* Category Showcase Headers trên mobile */
     .category-block-header {
-        margin-top: 14px !important;
-        margin-bottom: 4px !important;
+        margin-top: 16px !important;
+        margin-bottom: 6px !important;
+        flex-wrap: wrap !important;
+        gap: 4px !important;
+        align-items: center !important;
+        padding-bottom: 2px !important;
     }
     .cat-block-title {
-        font-size: 12.5px !important;
-        padding: 3px 12px 3px 8px !important;
+        font-size: 12px !important;
+        padding: 4px 8px !important;
+        border-radius: 4px 4px 0 0 !important;
+        letter-spacing: 0.2px !important;
     }
     .cat-block-title::after {
-        border-width: 12px 0 12px 10px !important;
+        display: none !important; /* Ẩn mũi tên vát góc trên mobile để tránh che đè link bên phải */
     }
     .cat-block-more {
-        font-size: 11.5px !important;
+        font-size: 11px !important;
+        white-space: nowrap !important;
+        margin-left: auto !important;
     }
     .cat-block-bullets {
-        font-size: 11.5px !important;
+        font-size: 11px !important;
         margin-bottom: 6px !important;
+        line-height: 1.35 !important;
     }
 
     /* Lưới sản phẩm 2 cột chuẩn mobile */
@@ -465,6 +491,71 @@
         padding: 5px 4px !important;
     }
 
+    /* Thanh công cụ danh mục sản phẩm (Catalog Toolbar) trên mobile */
+    .catalog-toolbar {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 8px !important;
+        padding: 8px 10px !important;
+        background: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 8px !important;
+        margin-bottom: 12px !important;
+    }
+    .catalog-toolbar__main {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        width: 100% !important;
+    }
+    .catalog-toolbar__filter-btn {
+        flex: 1 !important;
+        height: 36px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 6px !important;
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        background: #004098 !important;
+        color: #ffffff !important;
+        border: none !important;
+        border-radius: 6px !important;
+        box-shadow: 0 1px 3px rgba(0, 64, 152, 0.2) !important;
+    }
+    .catalog-toolbar__sort {
+        flex: 1 !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+    .catalog-toolbar__sort select {
+        width: 100% !important;
+        height: 36px !important;
+        font-size: 12px !important;
+        font-weight: 500 !important;
+        border-radius: 6px !important;
+        border: 1px solid #cbd5e1 !important;
+        padding: 0 8px !important;
+        background: #ffffff !important;
+        color: #1e293b !important;
+    }
+    .catalog-toolbar__meta {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        font-size: 11px !important;
+        color: #64748b !important;
+        padding-top: 4px !important;
+        border-top: 1px dashed #e2e8f0 !important;
+    }
+    .catalog-toolbar__count {
+        font-size: 11px !important;
+        color: #64748b !important;
+    }
+    .catalog-toolbar__limit {
+        display: none !important;
+    }
+
     /* MCB Calculator & BOM Box trên mobile */
     .calc-row, .calc-results-row {
         grid-template-columns: 1fr !important;
@@ -494,6 +585,16 @@
         flex-direction: column;
         text-align: center;
         gap: 0.5rem;
+    }
+
+    /* Offcanvas Cart Drawer mobile */
+    .cart-drawer__header,
+    .cart-drawer__body,
+    .cart-drawer__footer {
+        padding: 1rem 12px !important;
+    }
+    .cart-drawer__freeship-bar {
+        padding: 0.65rem 12px !important;
     }
 }
 
@@ -658,7 +759,7 @@
     }
 }
 
-/* Responsive Category Overview */
+/* Responsive Category Overview - Chuẩn doanh nghiệp di động */
 @media (max-width: 991px) {
     .cat-corp-hero__inner {
         grid-template-columns: 1fr !important;
@@ -683,35 +784,92 @@
 }
 
 @media (max-width: 768px) {
+    /* 4 Cam kết Doanh nghiệp: Giữ 2 cột mini cực kỳ gọn gàng */
     .cat-corp-trust-grid {
-        grid-template-columns: 1fr !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 6px !important;
+        margin-bottom: 10px !important;
     }
+    .cat-trust-item {
+        padding: 6px 8px !important;
+        border-radius: 6px !important;
+        gap: 6px !important;
+    }
+    .cat-trust-icon {
+        width: 26px !important;
+        height: 26px !important;
+        min-width: 26px !important;
+    }
+    .cat-trust-icon svg {
+        width: 13px !important;
+        height: 13px !important;
+    }
+    .cat-trust-text strong {
+        font-size: 11px !important;
+        line-height: 1.2 !important;
+        display: block !important;
+    }
+    .cat-trust-text small {
+        font-size: 9.5px !important;
+        color: #64748b !important;
+    }
+
+    /* 3 Nút Thao tác Hero: 2 nút trên, 1 hotline dưới */
+    .cat-corp-hero__actions {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 6px !important;
+        width: 100% !important;
+        margin-top: 8px !important;
+    }
+    .btn-corp-act {
+        height: 36px !important;
+        padding: 0 8px !important;
+        font-size: 11.5px !important;
+        font-weight: 600 !important;
+        justify-content: center !important;
+        border-radius: 6px !important;
+    }
+    .btn-corp-act--phone {
+        grid-column: span 2 !important;
+    }
+
+    /* Điều hướng nhanh dòng thiết bị: 2 cột gọn, không cuộn dài vô tận */
     .cat-quick-nav__grid {
         grid-template-columns: repeat(2, 1fr) !important;
+        gap: 6px !important;
     }
+    .cat-quick-chip {
+        padding: 6px 8px !important;
+        border-radius: 6px !important;
+        gap: 8px !important;
+    }
+    .cat-quick-chip__thumb {
+        width: 38px !important;
+        height: 38px !important;
+        min-width: 38px !important;
+    }
+    .cat-quick-chip__title {
+        font-size: 11.5px !important;
+        line-height: 1.25 !important;
+    }
+    .cat-quick-chip__desc {
+        display: none !important;
+    }
+
     .cat-section-card__head {
         flex-direction: column !important;
         align-items: flex-start !important;
-        gap: 0.75rem !important;
+        gap: 0.5rem !important;
     }
     .cat-head-more-btn {
         width: 100% !important;
         justify-content: center !important;
+        height: 34px !important;
+        font-size: 12px !important;
     }
     .cat-section-card__grid {
         grid-template-columns: repeat(2, 1fr) !important;
-    }
-}
-
-@media (max-width: 576px) {
-    .cat-quick-nav__grid {
-        grid-template-columns: 1fr !important;
-    }
-    .cat-corp-hero__actions {
-        flex-direction: column !important;
-        align-items: stretch !important;
-    }
-    .btn-corp-act {
-        width: 100% !important;
+        gap: 8px !important;
     }
 }

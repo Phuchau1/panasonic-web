@@ -228,22 +228,12 @@ $total = $result['total'];
 
             <!-- Toolbar bar -->
             <div class="catalog-toolbar">
-                <div class="catalog-toolbar__info">
-                    <button type="button" class="btn btn--outline btn--sm hide-desktop" data-filter-toggle>
+                <div class="catalog-toolbar__main">
+                    <button type="button" class="btn btn--outline btn--sm catalog-toolbar__filter-btn hide-desktop" data-filter-toggle>
                         <?= icon('filter') ?> Bộ lọc
                     </button>
-                    <span>Hiển thị <strong><?= count($items) ?></strong> trên tổng <strong><?= $total ?></strong> sản phẩm<?= $pages > 1 ? " (Trang {$page}/{$pages})" : "" ?></span>
-                </div>
-                <div class="catalog-toolbar__controls">
-                    <div class="catalog-toolbar__limit">
-                        <span class="limit-label">Xem:</span>
-                        <a href="<?= url('/san-pham') . query_with(['limit' => 12, 'page' => null]) ?>" class="limit-btn <?= empty($filters['limit']) || $filters['limit'] == '12' ? 'is-active' : '' ?>">12</a>
-                        <a href="<?= url('/san-pham') . query_with(['limit' => 24, 'page' => null]) ?>" class="limit-btn <?= ($filters['limit'] ?? '') == '24' ? 'is-active' : '' ?>">24</a>
-                        <a href="<?= url('/san-pham') . query_with(['limit' => 48, 'page' => null]) ?>" class="limit-btn <?= ($filters['limit'] ?? '') == '48' ? 'is-active' : '' ?>">48</a>
-                        <a href="<?= url('/san-pham') . query_with(['limit' => 'all', 'page' => null]) ?>" class="limit-btn <?= ($filters['limit'] ?? '') == 'all' ? 'is-active' : '' ?>">Tất cả</a>
-                    </div>
                     <div class="catalog-toolbar__sort">
-                        <label for="sortSelect">Sắp xếp:</label>
+                        <label for="sortSelect" class="hide-sm">Sắp xếp:</label>
                         <select id="sortSelect" class="field__input field__input--sm" onchange="location = this.value">
                             <option value="<?= url('/san-pham') . query_with(['sort' => 'newest']) ?>" <?= $filters['sort'] === 'newest' ? 'selected' : '' ?>>Mới nhất</option>
                             <option value="<?= url('/san-pham') . query_with(['sort' => 'popular']) ?>" <?= $filters['sort'] === 'popular' ? 'selected' : '' ?>>Bán chạy / Nổi bật</option>
@@ -251,6 +241,16 @@ $total = $result['total'];
                             <option value="<?= url('/san-pham') . query_with(['sort' => 'price_desc']) ?>" <?= $filters['sort'] === 'price_desc' ? 'selected' : '' ?>>Giá giảm dần</option>
                             <option value="<?= url('/san-pham') . query_with(['sort' => 'name']) ?>" <?= $filters['sort'] === 'name' ? 'selected' : '' ?>>Tên A - Z</option>
                         </select>
+                    </div>
+                </div>
+                <div class="catalog-toolbar__meta">
+                    <span class="catalog-toolbar__count">Hiển thị <strong><?= count($items) ?></strong> / <strong><?= $total ?></strong> sản phẩm<?= $pages > 1 ? " (Trang {$page}/{$pages})" : "" ?></span>
+                    <div class="catalog-toolbar__limit hide-sm">
+                        <span class="limit-label">Xem:</span>
+                        <a href="<?= url('/san-pham') . query_with(['limit' => 12, 'page' => null]) ?>" class="limit-btn <?= empty($filters['limit']) || $filters['limit'] == '12' ? 'is-active' : '' ?>">12</a>
+                        <a href="<?= url('/san-pham') . query_with(['limit' => 24, 'page' => null]) ?>" class="limit-btn <?= ($filters['limit'] ?? '') == '24' ? 'is-active' : '' ?>">24</a>
+                        <a href="<?= url('/san-pham') . query_with(['limit' => 48, 'page' => null]) ?>" class="limit-btn <?= ($filters['limit'] ?? '') == '48' ? 'is-active' : '' ?>">48</a>
+                        <a href="<?= url('/san-pham') . query_with(['limit' => 'all', 'page' => null]) ?>" class="limit-btn <?= ($filters['limit'] ?? '') == 'all' ? 'is-active' : '' ?>">Tất cả</a>
                     </div>
                 </div>
             </div>

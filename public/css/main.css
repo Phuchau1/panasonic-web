@@ -1876,6 +1876,24 @@ button, input, select, textarea {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
+    gap: 1rem;
+}
+
+.catalog-toolbar__main {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.catalog-toolbar__meta {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.catalog-toolbar__count {
+    font-size: 0.85rem;
+    color: var(--slate-600);
 }
 
 .catalog-toolbar__info {
