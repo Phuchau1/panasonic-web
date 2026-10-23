@@ -11,4 +11,5 @@ return [
     'password' => getenv('DB_PASS') !== false ? getenv('DB_PASS') : '',
     'charset'  => 'utf8mb4',
     'collation'=> 'utf8mb4_unicode_ci',
+    'ssl'      => (bool) (getenv('DB_SSL') ?: false),
 ];

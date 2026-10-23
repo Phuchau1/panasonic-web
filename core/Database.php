@@ -30,13 +30,20 @@ final class Database
         );
 
         try {
-            $this->pdo = new PDO($dsn, $cfg['username'], $cfg['password'], [
+            $options = [
                 PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES   => false,   // Prepared statement thật phía server
                 PDO::ATTR_STRINGIFY_FETCHES  => false,
                 PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES {$cfg['charset']} COLLATE {$cfg['collation']}",
-            ]);
+            ];
+
+            // Tự động kích hoạt SSL khi kết nối tới các dịch vụ Cloud MySQL (Aiven, TiDB, PlanetScale...)
+            if (!empty($cfg['ssl']) || str_contains((string)$cfg['host'], 'aivencloud.com') || str_contains((string)$cfg['host'], 'tidbcloud.com')) {
+                $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = false;
+            }
+
+            $this->pdo = new PDO($dsn, $cfg['username'], $cfg['password'], $options);
         } catch (PDOException $e) {
             // Không lộ thông tin đăng nhập DB ra ngoài
             error_log('[DB] Connection failed: ' . $e->getMessage());
