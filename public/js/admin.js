@@ -54,22 +54,132 @@
     `;
     document.head.appendChild(style);
 
+    // Cập nhật giao diện thanh tiến trình đơn hàng (Stepper) ngay lập tức
+    function updateOrderStepperUI(newStatus) {
+        const stepOrder = ['pending', 'confirmed', 'shipping', 'completed'];
+        const newIdx = stepOrder.indexOf(newStatus);
+        if (newIdx === -1) return;
+
+        const checkSvg = '<svg class="icon " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>';
+
+        // 1. Cập nhật các vòng tròn và nhãn bước
+        document.querySelectorAll('.stepper-item').forEach(item => {
+            const idx = parseInt(item.dataset.index, 10);
+            const circle = item.querySelector('.stepper-circle');
+            const label = item.querySelector('.stepper-label');
+            if (!circle || !label) return;
+
+            const isDone = idx < newIdx || (newStatus === 'completed' && idx <= newIdx);
+            const isCurrent = idx === newIdx && newStatus !== 'completed';
+
+            if (isDone) {
+                circle.style.background = '#059669';
+                circle.style.color = '#fff';
+                circle.style.boxShadow = '0 2px 6px rgba(5,150,105,0.25)';
+                circle.style.border = 'none';
+                circle.innerHTML = checkSvg;
+                label.style.color = '#059669';
+                label.style.fontWeight = '700';
+            } else if (isCurrent) {
+                circle.style.background = '#004098';
+                circle.style.color = '#fff';
+                circle.style.boxShadow = '0 0 0 4px rgba(0,64,152,0.18)';
+                circle.style.border = 'none';
+                circle.innerHTML = (idx + 1).toString();
+                label.style.color = '#004098';
+                label.style.fontWeight = '700';
+            } else {
+                circle.style.background = '#f8fafc';
+                circle.style.color = '#94a3b8';
+                circle.style.boxShadow = 'none';
+                circle.style.border = '1.5px solid #cbd5e1';
+                circle.innerHTML = (idx + 1).toString();
+                label.style.color = '#94a3b8';
+                label.style.fontWeight = '500';
+            }
+        });
+
+        // 2. Cập nhật đường kẻ nối giữa các bước
+        document.querySelectorAll('.stepper-line').forEach(line => {
+            const lineIdx = parseInt(line.dataset.line, 10);
+            if (lineIdx < newIdx || (newStatus === 'completed')) {
+                line.style.background = '#059669';
+            } else {
+                line.style.background = '#e2e8f0';
+            }
+        });
+
+        // 3. Cập nhật badge trạng thái hiện tại
+        const badge = document.getElementById('currentStatusBadge');
+        if (badge) {
+            const labelMap = {
+                'pending': 'Chờ xác nhận',
+                'confirmed': 'Đã xác nhận',
+                'shipping': 'Đang giao hàng',
+                'completed': 'Hoàn thành',
+                'cancelled': 'Đã huỷ'
+            };
+            badge.textContent = labelMap[newStatus] || newStatus;
+        }
+    }
+
     // ========================================================
-    // 1. AJAX DELETE HANDLER (XÓA SẢN PHẨM, DỰ ÁN, ĐÁNH GIÁ)
+    // 1. AJAX DELETE & STATUS HANDLER
     // ========================================================
     document.addEventListener('submit', async (e) => {
         const form = e.target;
         const action = form.getAttribute('action') || '';
 
-        // Check if form is a delete action
+        const isOrderProcess = action.includes('/admin/don-hang/trang-thai/');
         const isDeleteAction = action.includes('/xoa/');
-        const isStatusToggle = action.includes('/trang-thai/');
+        const isStatusToggle = action.includes('/trang-thai/') && !isOrderProcess;
 
-        if (!isDeleteAction && !isStatusToggle) {
+        if (!isDeleteAction && !isStatusToggle && !isOrderProcess) {
             return;
         }
 
         e.preventDefault();
+
+        // Xử lý riêng cho tiến trình chuyển trạng thái đơn hàng
+        if (isOrderProcess) {
+            const submitBtn = form.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Đang xử lý...';
+            }
+            const formData = new FormData(form);
+            try {
+                const res = await fetch(action, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    },
+                    body: formData
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    showAdminToast(data.message || 'Đã cập nhật trạng thái đơn hàng!', 'success');
+                    // Tự động cập nhật thanh tiến trình xử lý đơn hàng ngay lập tức
+                    if (data.status) {
+                        updateOrderStepperUI(data.status);
+                    }
+                    // Tự động tải lại trang sau 400ms để cập nhật danh mục form tiếp theo
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 400);
+                } else {
+                    showAdminToast(data.message || 'Không thể cập nhật trạng thái.', 'error');
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Cập nhật';
+                    }
+                }
+            } catch (err) {
+                form.submit();
+            }
+            return;
+        }
 
         if (isDeleteAction) {
             const confirmMsg = form.getAttribute('onsubmit') || '';

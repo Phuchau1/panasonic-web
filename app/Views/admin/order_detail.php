@@ -32,7 +32,7 @@ $allowedStatuses = $allowedStatuses ?? \App\Models\Order::allowedNextStatuses($o
                 <?= icon('alert') ?> <strong>Đơn hàng đã huỷ:</strong> Toàn bộ tồn kho đã được hoàn trả, quy trình đã dừng và khóa lại.
             </div>
         <?php else: ?>
-            <div style="display: flex; align-items: center; justify-content: space-between; position: relative;">
+            <div id="orderStepper" data-current="<?= e($order['status']) ?>" style="display: flex; align-items: center; justify-content: space-between; position: relative;">
                 <?php 
                 $steps = [
                     'pending'   => '1. Chờ xác nhận',
@@ -49,8 +49,8 @@ $allowedStatuses = $allowedStatuses ?? \App\Models\Order::allowedNextStatuses($o
                     $isCurrent = $idx === $curIdx;
                     $isDone = $isPassed || ($isCurrent && $order['status'] === 'completed');
                 ?>
-                    <div style="display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; z-index: 2;">
-                        <div style="width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.92rem; font-weight: 700; transition: all 0.2s;
+                    <div class="stepper-item" data-step="<?= e($sKey) ?>" data-index="<?= $idx ?>" style="display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; z-index: 2;">
+                        <div class="stepper-circle" style="width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.92rem; font-weight: 700; transition: all 0.25s;
                             <?= $isDone ? 'background: #059669; color: #fff; box-shadow: 0 2px 6px rgba(5,150,105,0.25);' : ($isCurrent ? 'background: #004098; color: #fff; box-shadow: 0 0 0 4px rgba(0,64,152,0.18);' : 'background: #f8fafc; color: #94a3b8; border: 1.5px solid #cbd5e1;') ?>">
                             <?php if ($isDone): ?>
                                 <?= icon('check') ?>
@@ -58,12 +58,12 @@ $allowedStatuses = $allowedStatuses ?? \App\Models\Order::allowedNextStatuses($o
                                 <?= $idx + 1 ?>
                             <?php endif; ?>
                         </div>
-                        <span style="font-size: 0.8rem; font-weight: <?= ($isCurrent || $isDone) ? '700' : '500' ?>; color: <?= $isDone ? '#059669' : ($isCurrent ? '#004098' : '#94a3b8') ?>; margin-top: 0.45rem; text-align: center;">
+                        <span class="stepper-label" style="font-size: 0.8rem; font-weight: <?= ($isCurrent || $isDone) ? '700' : '500' ?>; color: <?= $isDone ? '#059669' : ($isCurrent ? '#004098' : '#94a3b8') ?>; margin-top: 0.45rem; text-align: center;">
                             <?= $steps[$sKey] ?>
                         </span>
                     </div>
                     <?php if ($idx < count($stepKeys) - 1): ?>
-                        <div style="flex: 1; height: 3px; background: <?= ($idx < $curIdx || ($isCurrent && $order['status'] === 'completed')) ? '#059669' : '#e2e8f0' ?>; margin-top: -20px; position: relative; z-index: 1;"></div>
+                        <div class="stepper-line" data-line="<?= $idx ?>" style="flex: 1; height: 3px; background: <?= ($idx < $curIdx || ($isCurrent && $order['status'] === 'completed')) ? '#059669' : '#e2e8f0' ?>; margin-top: -20px; position: relative; z-index: 1; transition: background 0.25s;"></div>
                     <?php endif; ?>
                 <?php endforeach; ?>
             </div>
@@ -113,7 +113,7 @@ $allowedStatuses = $allowedStatuses ?? \App\Models\Order::allowedNextStatuses($o
             <div>
                 <div style="font-size: 0.78rem; color: #64748b; margin-bottom: 0.2rem; text-transform: uppercase; font-weight: 600;">Trạng thái hiện tại:</div>
                 <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <span class="badge badge--primary" style="font-size: 0.92rem; padding: 0.35rem 0.75rem; font-weight: 700;">
+                    <span id="currentStatusBadge" class="badge badge--primary" style="font-size: 0.92rem; padding: 0.35rem 0.75rem; font-weight: 700;">
                         <?= e($statuses[$order['status']] ?? $order['status']) ?>
                     </span>
                     <span style="font-size: 0.82rem; color: #64748b;">(Đơn <?= $order['order_type'] === 'project' ? 'Giá Công Trình' : 'Giá Bán Lẻ' ?>)</span>
