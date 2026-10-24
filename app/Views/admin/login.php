@@ -35,7 +35,13 @@
             <label class="field__label">Mật khẩu</label>
             <input type="password" name="password" class="field__input" required placeholder="••••••••">
         </div>
-        <button type="submit" class="btn btn--primary btn--block btn--lg mt-4">Đăng nhập</button>
+        <div style="display: flex; align-items: center; margin-bottom: 1.25rem;">
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: #475569; cursor: pointer; user-select: none;">
+                <input type="checkbox" name="remember" value="1" checked style="accent-color: #004098; width: 17px; height: 17px;">
+                <span>Duy trì đăng nhập (Không cần đăng nhập lại khi load)</span>
+            </label>
+        </div>
+        <button type="submit" class="btn btn--primary btn--block btn--lg">Đăng nhập</button>
     </form>
     <div style="text-align: center; margin-top: 1.5rem; font-size: 0.8rem; color: #94a3b8;">
         Mặc định: <code>admin</code> / <code>Admin@123</code>

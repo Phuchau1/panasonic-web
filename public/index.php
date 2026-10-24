@@ -50,8 +50,9 @@ $debug = (bool) config('debug', false);
 ini_set('display_errors', $debug ? '1' : '0');
 error_reporting(E_ALL);
 
-$isHttps = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
-$cookieLifetime = 30 * 24 * 3600; // Lưu phiên đăng nhập 30 ngày (vĩnh viễn không bị mất khi load lại)
+$isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+    || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
+$cookieLifetime = 365 * 24 * 3600; // Lưu phiên đăng nhập 1 năm (vĩnh viễn không bị mất khi load lại)
 ini_set('session.gc_maxlifetime', (string) $cookieLifetime);
 session_name('PANASID');
 session_set_cookie_params([
@@ -61,7 +62,7 @@ session_set_cookie_params([
     'httponly' => true,
     'samesite' => 'Lax',
 ]);
-ini_set('session.use_strict_mode', '1');
+ini_set('session.use_strict_mode', '0');
 session_start();
 
 header('Content-Type: text/html; charset=UTF-8');
@@ -85,7 +86,7 @@ use Core\Router;
 $router = new Router(base_path());
 
 $adminAuth = [static function (): bool {
-    if (empty($_SESSION['admin'])) {
+    if (!admin_user()) {
         header('Location: ' . url('/admin/login'));
         return false;
     }

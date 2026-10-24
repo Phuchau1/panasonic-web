@@ -166,7 +166,88 @@ function cart_count(): int
 
 function admin_user(): ?array
 {
-    return $_SESSION['admin'] ?? null;
+    if (!empty($_SESSION['admin']) && is_array($_SESSION['admin'])) {
+        // Tự động duy trì cookie ghi nhớ 1 năm nếu chưa có
+        if (empty($_COOKIE['panas_admin_remember']) && !headers_sent()) {
+            set_admin_remember_cookie($_SESSION['admin']);
+        }
+        return $_SESSION['admin'];
+    }
+
+    // Tự động khôi phục phiên đăng nhập Admin vĩnh viễn từ Cookie an toàn (HMAC SHA-256)
+    // Giúp admin khi load lại trang hoặc máy chủ Render restart/redeploy không bao giờ bị văng ra đăng nhập lại
+    if (!empty($_COOKIE['panas_admin_remember'])) {
+        $raw = (string) $_COOKIE['panas_admin_remember'];
+        $decoded = json_decode(base64_decode($raw), true);
+        if (is_array($decoded) && !empty($decoded['id']) && !empty($decoded['expire']) && !empty($decoded['hash'])) {
+            if ($decoded['expire'] > time()) {
+                try {
+                    $db = \Core\Database::getInstance();
+                    $admin = $db->fetch('SELECT id, username, full_name, role FROM admins WHERE id = :id LIMIT 1', [
+                        'id' => (int) $decoded['id']
+                    ]);
+                    if ($admin) {
+                        $secretKey = config('app_key') ?: 'panasonic-super-secret-key-salt-2026';
+                        $expectedHash = hash_hmac('sha256', $admin['id'] . '|' . $admin['username'] . '|' . $decoded['expire'], $secretKey);
+                        if (hash_equals($expectedHash, $decoded['hash'])) {
+                            $_SESSION['admin'] = $admin;
+                            return $_SESSION['admin'];
+                        }
+                    }
+                } catch (\Throwable $e) {
+                    error_log('[admin_user restore] ' . $e->getMessage());
+                }
+            }
+        }
+    }
+
+    return null;
+}
+
+/**
+ * Thiết lập cookie xác thực Admin vĩnh viễn (1 năm) an toàn chống đăng nhập lại khi load
+ */
+function set_admin_remember_cookie(array $admin): void
+{
+    if (empty($admin['id']) || empty($admin['username']) || headers_sent()) {
+        return;
+    }
+    $expire = time() + (365 * 24 * 3600); // 1 năm
+    $secretKey = config('app_key') ?: 'panasonic-super-secret-key-salt-2026';
+    $hash = hash_hmac('sha256', $admin['id'] . '|' . $admin['username'] . '|' . $expire, $secretKey);
+    $payload = base64_encode(json_encode([
+        'id'     => (int) $admin['id'],
+        'expire' => $expire,
+        'hash'   => $hash,
+    ]));
+    $cookiePath = base_path() ?: '/';
+    $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+        || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
+
+    setcookie('panas_admin_remember', $payload, [
+        'expires'  => $expire,
+        'path'     => $cookiePath,
+        'secure'   => $isHttps,
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+}
+
+/**
+ * Xóa cookie xác thực Admin khi chủ động bấm đăng xuất
+ */
+function clear_admin_remember_cookie(): void
+{
+    if (headers_sent()) {
+        return;
+    }
+    $cookiePath = base_path() ?: '/';
+    setcookie('panas_admin_remember', '', [
+        'expires'  => time() - 86400,
+        'path'     => $cookiePath,
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
 }
 
 function auth_user(): ?array

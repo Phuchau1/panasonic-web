@@ -53,12 +53,14 @@ class AdminController extends Controller
         session_regenerate_id(true); // Chống session fixation
         unset($_SESSION['login_attempts']);
         $_SESSION['admin'] = $admin;
+        set_admin_remember_cookie($admin); // Lưu phiên vĩnh viễn (1 năm) - load lại không cần đăng nhập lại
         $this->redirect('/admin');
     }
 
     public function logout(): void
     {
         unset($_SESSION['admin']);
+        clear_admin_remember_cookie(); // Xóa cookie phiên khi chủ động bấm đăng xuất
         session_regenerate_id(true);
         $this->redirect('/admin/login');
     }
