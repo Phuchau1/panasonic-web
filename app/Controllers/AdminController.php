@@ -435,6 +435,7 @@ class AdminController extends Controller
             'items'           => $model->items($id),
             'statuses'        => Order::STATUSES,
             'allowedStatuses' => $allowedStatuses,
+            'carriers'        => Order::CARRIERS,
         ], 'admin');
     }
 
@@ -462,7 +463,20 @@ class AdminController extends Controller
         }
 
         if ($newStatus === $currentStatus) {
-            flash('info', 'Trạng thái đơn hàng không thay đổi.');
+            // Nếu trạng thái không đổi nhưng người dùng cập nhật thông tin vận chuyển
+            $shippingCarrier = $this->input('shipping_carrier');
+            $trackingCode    = $this->input('tracking_code');
+            $shippingNote    = $this->input('shipping_note');
+            $updateData = [];
+            if ($shippingCarrier !== null) $updateData['shipping_carrier'] = $shippingCarrier ?: null;
+            if ($trackingCode !== null) $updateData['tracking_code'] = $trackingCode ?: null;
+            if ($shippingNote !== null) $updateData['shipping_note'] = $shippingNote ?: null;
+            if (!empty($updateData)) {
+                $orderModel->update($id, $updateData);
+                flash('success', 'Đã lưu thông tin vận đơn giao hàng.');
+            } else {
+                flash('info', 'Trạng thái đơn hàng không thay đổi.');
+            }
             $this->redirect('/admin/don-hang/' . $id);
             return;
         }
@@ -479,8 +493,44 @@ class AdminController extends Controller
             return;
         }
 
+        $updateData = ['status' => $newStatus];
+
+        // Xử lý thông tin đơn vị vận chuyển & mã vận đơn khi chuyển bước
+        $shippingCarrier = $this->input('shipping_carrier') ?: ($order['shipping_carrier'] ?? 'ghtk');
+        $trackingCode    = $this->input('tracking_code');
+        $shippingNote    = $this->input('shipping_note');
+
+        if ($shippingCarrier) {
+            $updateData['shipping_carrier'] = $shippingCarrier;
+        }
+        if ($shippingNote !== null) {
+            $updateData['shipping_note'] = $shippingNote;
+        }
+
+        // Khi chuyển sang Đang giao hàng: tự động gán mã vận đơn nếu chưa có
+        if ($newStatus === 'shipping') {
+            if (empty($trackingCode) && !empty($order['tracking_code'])) {
+                $trackingCode = $order['tracking_code'];
+            } elseif (empty($trackingCode)) {
+                $carrierInfo = Order::getCarrierInfo($shippingCarrier);
+                $prefix = $carrierInfo['prefix'] ?? 'PNS';
+                $trackingCode = $prefix . '-' . preg_replace('/[^0-9A-Z]/', '', strtoupper($order['order_code']));
+            }
+            $updateData['tracking_code'] = $trackingCode;
+            if (empty($order['shipped_at'])) {
+                $updateData['shipped_at'] = date('Y-m-d H:i:s');
+            }
+        } elseif ($trackingCode !== null && $trackingCode !== '') {
+            $updateData['tracking_code'] = $trackingCode;
+        }
+
+        // Khi xác nhận Hoàn thành: ghi nhận thời gian khách nhận hàng thành công
+        if ($newStatus === 'completed' && empty($order['delivered_at'])) {
+            $updateData['delivered_at'] = date('Y-m-d H:i:s');
+        }
+
         // Cập nhật trạng thái mới hợp lệ
-        $orderModel->update($id, ['status' => $newStatus]);
+        $orderModel->update($id, $updateData);
 
         // Nếu chuyển sang trạng thái đã hủy: hoàn trả tồn kho tự động
         if ($newStatus === 'cancelled' && $currentStatus !== 'cancelled') {

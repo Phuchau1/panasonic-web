@@ -133,6 +133,11 @@
                                                 $st = $statusMap[$od['status']] ?? ['label' => $od['status'], 'cls' => ''];
                                                 ?>
                                                 <span class="order-status-badge <?= $st['cls'] ?>"><?= $st['label'] ?></span>
+                                                <?php if (!empty($od['tracking_code'])): ?>
+                                                    <a href="<?= url('/tra-cuu-don-hang?q=' . urlencode($od['tracking_code'])) ?>" style="display: block; font-size: 0.72rem; font-weight: 700; color: #004098; margin-top: 3px; text-decoration: none;" title="Bấm để tra cứu vận đơn">
+                                                        <?= icon('truck') ?> <?= e($od['tracking_code']) ?>
+                                                    </a>
+                                                <?php endif; ?>
                                             </td>
                                             <td>
                                                 <a href="<?= url('/dat-hang-thanh-cong/' . $od['order_code']) ?>" class="btn-order-view">Xem »</a>
@@ -177,6 +182,14 @@
                                             <span class="card-item-label"><?= icon('shield') ?> Thanh toán:</span>
                                             <span class="pay-method-badge"><?= $od['payment_method'] === 'bank_transfer' ? 'Chuyển khoản QR' : 'COD (Tiền mặt)' ?></span>
                                         </div>
+                                        <?php if (!empty($od['tracking_code'])): ?>
+                                            <div class="user-order-card__item">
+                                                <span class="card-item-label"><?= icon('truck') ?> Vận đơn:</span>
+                                                <a href="<?= url('/tra-cuu-don-hang?q=' . urlencode($od['tracking_code'])) ?>" style="font-weight: 700; color: #004098; font-size: 0.82rem; font-family: monospace;">
+                                                    <?= e($od['tracking_code']) ?> &nearr;
+                                                </a>
+                                            </div>
+                                        <?php endif; ?>
                                     </div>
 
                                     <div class="user-order-card__footer">

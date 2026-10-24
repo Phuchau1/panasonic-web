@@ -94,6 +94,42 @@ $isPaid = ($paymentStatus === 'paid');
         </div>
 
         <!-- Khối Thanh toán: Đặc biệt VietQR Napas 24/7 tương tác tức thì -->
+        <?php if (!empty($order['shipping_carrier']) || !empty($order['tracking_code'])): 
+            $carrierInfo = \App\Models\Order::getCarrierInfo($order['shipping_carrier'] ?? null);
+            $trackingUrl = \App\Models\Order::getTrackingUrl($order['shipping_carrier'] ?? null, $order['tracking_code'] ?? null);
+        ?>
+            <div class="enterprise-card mb-4" style="background: #eff6ff; border: 1.5px solid #93c5fd;">
+                <div class="enterprise-card__body" style="padding: 1.25rem 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+                        <div style="display: flex; align-items: center; gap: 0.6rem;">
+                            <div style="width: 36px; height: 36px; border-radius: 6px; background: #004098; color: #fff; display: flex; align-items: center; justify-content: center;">
+                                <?= icon('truck') ?>
+                            </div>
+                            <div>
+                                <strong style="color: #1e3a8a; font-size: 1rem;">Đơn hàng được vận chuyển bởi <?= e($carrierInfo['name'] ?? $order['shipping_carrier']) ?></strong>
+                                <div style="font-size: 0.85rem; color: #2563eb;">
+                                    Mã vận đơn: <strong style="font-family: monospace; font-size: 0.95rem;"><?= e($order['tracking_code'] ?: 'PNS-' . $order['order_code']) ?></strong>
+                                    <?php if (!empty($order['shipped_at'])): ?>
+                                        &bull; Xuất kho: <?= date('d/m/Y H:i', strtotime($order['shipped_at'])) ?>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 0.4rem; align-items: center;">
+                            <?php if (!empty($trackingUrl)): ?>
+                                <a href="<?= e($trackingUrl) ?>" target="_blank" class="btn btn--primary btn--sm" style="background: <?= $carrierInfo['color'] ?? '#004098' ?>; border-color: <?= $carrierInfo['color'] ?? '#004098' ?>; font-weight: 700;">
+                                    🔍 Tra cứu website hãng &nearr;
+                                </a>
+                            <?php endif; ?>
+                            <a href="<?= url('/tra-cuu-don-hang?q=' . urlencode($order['order_code'])) ?>" class="btn btn--outline btn--sm">
+                                Xem chi tiết
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+
         <?php if ($paymentMethod === 'vietqr' || $paymentMethod === 'bank_transfer'): ?>
             <div class="enterprise-card vietqr-payment-card mb-4" id="vietqrSection">
                 <div class="vietqr-header">
@@ -340,6 +376,9 @@ $isPaid = ($paymentStatus === 'paid');
 
         <!-- Nút thao tác sau khi đặt hàng -->
         <div class="success-footer-actions">
+            <a href="<?= url('/tra-cuu-don-hang?q=' . urlencode($order['order_code'])) ?>" class="btn btn--outline" style="border-color: #004098; color: #004098; font-weight: 700;">
+                <?= icon('truck') ?> Tra Cứu Vận Đơn
+            </a>
             <?php if (!empty($hasEmailArchive)): ?>
                 <a href="<?= url('/don-hang/xem-email/' . $order['order_code']) ?>" target="_blank" class="btn btn--outline" style="border-color: #004098; color: #004098; font-weight: 600;">
                     <?= icon('mail') ?> Xem Biên Nhận Email

@@ -74,6 +74,7 @@ $navSeries     = $navSeries ?? (new ProductSeries())->active();
 
         <p class="drawer__label">Dự Án & Tiện Ích</p>
         <ul class="drawer__list">
+            <li><a href="<?= url('/tra-cuu-don-hang') ?>"><?= icon('truck') ?> Tra Cứu Đơn Hàng & Vận Đơn</a></li>
             <li><a href="<?= url('/du-an') ?>"><?= icon('building') ?> Dự Án Tiêu Biểu (TP.HCM & Long An)</a></li>
             <li><a href="<?= url('/bao-gia-cong-trinh') ?>"><?= icon('upload') ?> Gửi Báo Giá & Bóc Tách Vật Tư</a></li>
             <li><a href="<?= url('/lien-he') ?>"><?= icon('map-pin') ?> Liên Hệ & Bản Đồ Kho Hàng</a></li>

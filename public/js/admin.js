@@ -143,9 +143,10 @@
         // Xử lý riêng cho tiến trình chuyển trạng thái đơn hàng
         if (isOrderProcess) {
             const submitBtn = form.querySelector('button[type="submit"]');
+            const origHtml = submitBtn ? submitBtn.innerHTML : '';
             if (submitBtn) {
                 submitBtn.disabled = true;
-                submitBtn.textContent = 'Đang xử lý...';
+                submitBtn.innerHTML = '<span style="display:inline-block;width:12px;height:12px;border:2px solid currentColor;border-top-color:transparent;border-radius:50%;animation:spin 0.6s linear infinite;margin-right:6px;vertical-align:middle;"></span> Đang xử lý...';
             }
             const formData = new FormData(form);
             try {
@@ -172,7 +173,7 @@
                     showAdminToast(data.message || 'Không thể cập nhật trạng thái.', 'error');
                     if (submitBtn) {
                         submitBtn.disabled = false;
-                        submitBtn.textContent = 'Cập nhật';
+                        submitBtn.innerHTML = origHtml;
                     }
                 }
             } catch (err) {

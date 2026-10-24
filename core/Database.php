@@ -84,7 +84,25 @@ final class Database
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
             ");
         } catch (\Throwable $e) {
-            error_log('[DB AutoSchema] ' . $e->getMessage());
+            error_log('[DB AutoSchema contacts] ' . $e->getMessage());
+        }
+
+        // Tự động đảm bảo các cột đơn vị vận chuyển & mã vận đơn trong bảng orders
+        try {
+            $cols = $this->pdo->query("SHOW COLUMNS FROM `orders` LIKE 'shipping_carrier'")->fetchAll();
+            if (empty($cols)) {
+                $this->pdo->exec("
+                    ALTER TABLE `orders`
+                    ADD COLUMN `shipping_carrier` varchar(50) DEFAULT NULL AFTER `payment_status`,
+                    ADD COLUMN `tracking_code` varchar(100) DEFAULT NULL AFTER `shipping_carrier`,
+                    ADD COLUMN `shipping_fee` decimal(15,0) DEFAULT 0 AFTER `tracking_code`,
+                    ADD COLUMN `shipping_note` varchar(255) DEFAULT NULL AFTER `shipping_fee`,
+                    ADD COLUMN `shipped_at` datetime DEFAULT NULL AFTER `shipping_note`,
+                    ADD COLUMN `delivered_at` datetime DEFAULT NULL AFTER `shipped_at`;
+                ");
+            }
+        } catch (\Throwable $e) {
+            error_log('[DB AutoSchema orders shipping] ' . $e->getMessage());
         }
     }
 

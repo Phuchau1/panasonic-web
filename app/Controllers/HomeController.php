@@ -196,4 +196,40 @@ class HomeController extends Controller
         flash('success', "Cảm ơn Quý khách {$name}! Bộ phận kỹ sư dự án Panasonic tại TP.HCM & Long An đã tiếp nhận thông tin và sẽ liên hệ hỗ trợ trong vòng 15 phút.");
         header('Location: ' . url('/lien-he'));
     }
+
+    /**
+     * Tra cứu hành trình đơn hàng & đơn vị vận chuyển
+     * GET/POST /tra-cuu-don-hang
+     */
+    public function trackOrder(): void
+    {
+        $query = trim((string)($this->input('q') ?? $this->input('code') ?? ''));
+        $order = null;
+        $items = [];
+        $carrierInfo = null;
+        $trackingUrl = null;
+        $searched = false;
+
+        if ($query !== '') {
+            $searched = true;
+            $orderModel = new \App\Models\Order();
+            $order = $orderModel->findByTrackingOrCode($query);
+            if ($order) {
+                $items = $orderModel->items((int)$order['id']);
+                $carrierInfo = \App\Models\Order::getCarrierInfo($order['shipping_carrier'] ?? null);
+                $trackingUrl = \App\Models\Order::getTrackingUrl($order['shipping_carrier'] ?? null, $order['tracking_code'] ?? null);
+            }
+        }
+
+        $this->render('home/tracking', [
+            'title'       => 'Tra cứu đơn hàng & Hành trình vận chuyển | Thiết bị điện Panasonic',
+            'query'       => $query,
+            'searched'    => $searched,
+            'order'       => $order,
+            'items'       => $items,
+            'carrierInfo' => $carrierInfo,
+            'trackingUrl' => $trackingUrl,
+            'carriers'    => \App\Models\Order::CARRIERS,
+        ]);
+    }
 }

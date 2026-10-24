@@ -12,6 +12,7 @@ class Order extends BaseModel
         'user_id', 'order_code', 'customer_name', 'phone', 'email', 'company', 'tax_code', 'address',
         'province', 'district', 'ward', 'note',
         'order_type', 'subtotal', 'discount', 'total', 'payment_method', 'payment_status', 'status',
+        'shipping_carrier', 'tracking_code', 'shipping_fee', 'shipping_note', 'shipped_at', 'delivered_at',
     ];
 
     public const STATUSES = [
@@ -21,6 +22,83 @@ class Order extends BaseModel
         'completed' => 'Hoàn thành',
         'cancelled' => 'Đã huỷ',
     ];
+
+    public const CARRIERS = [
+        'ghtk' => [
+            'name'         => 'Giao Hàng Tiết Kiệm (GHTK)',
+            'short_name'   => 'GHTK',
+            'color'        => '#059669',
+            'bg'           => '#ecfdf5',
+            'hotline'      => '1900 6092',
+            'tracking_url' => 'https://khachhang.giaohangtietkiem.vn/khach-hang/tra-cuu-van-don?order_code={code}',
+            'prefix'       => 'GHTK',
+        ],
+        'ghn' => [
+            'name'         => 'Giao Hàng Nhanh (GHN Express)',
+            'short_name'   => 'GHN',
+            'color'        => '#ea580c',
+            'bg'           => '#fff7ed',
+            'hotline'      => '1900 636677',
+            'tracking_url' => 'https://donhang.ghn.vn/?order_code={code}',
+            'prefix'       => 'GHN',
+        ],
+        'viettel_post' => [
+            'name'         => 'Viettel Post',
+            'short_name'   => 'Viettel Post',
+            'color'        => '#dc2626',
+            'bg'           => '#fef2f2',
+            'hotline'      => '1900 8095',
+            'tracking_url' => 'https://viettelpost.com.vn/tra-cuu-hanh-trinh-don-hang?code={code}',
+            'prefix'       => 'VTP',
+        ],
+        'vnpost' => [
+            'name'         => 'Bưu Điện Việt Nam (VNPost)',
+            'short_name'   => 'VNPost',
+            'color'        => '#d97706',
+            'bg'           => '#fffbeb',
+            'hotline'      => '1900 545481',
+            'tracking_url' => 'http://www.vnpost.vn/vi-vn/dinh-vi/buu-pham?key={code}',
+            'prefix'       => 'VNPOST',
+        ],
+        'ahamove' => [
+            'name'         => 'Ahamove / Giao Hỏa Tốc 2H (Nội thành)',
+            'short_name'   => 'Ahamove Hỏa Tốc',
+            'color'        => '#c2410c',
+            'bg'           => '#fff7ed',
+            'hotline'      => '1900 545411',
+            'tracking_url' => '',
+            'prefix'       => 'AHA',
+        ],
+        'panasonic_truck' => [
+            'name'         => 'Xe Tải Phân Phối Kho Panasonic (Công trình)',
+            'short_name'   => 'Xe Tải Panasonic',
+            'color'        => '#004098',
+            'bg'           => '#eff6ff',
+            'hotline'      => '0798 284 321',
+            'tracking_url' => '',
+            'prefix'       => 'PNS-TRUCK',
+        ],
+    ];
+
+    public static function getTrackingUrl(?string $carrierKey, ?string $trackingCode): ?string
+    {
+        if (empty($carrierKey) || empty($trackingCode)) {
+            return null;
+        }
+        $carrier = self::CARRIERS[$carrierKey] ?? null;
+        if (!$carrier || empty($carrier['tracking_url'])) {
+            return null;
+        }
+        return str_replace('{code}', urlencode($trackingCode), $carrier['tracking_url']);
+    }
+
+    public static function getCarrierInfo(?string $carrierKey): ?array
+    {
+        if (empty($carrierKey)) {
+            return null;
+        }
+        return self::CARRIERS[$carrierKey] ?? null;
+    }
 
     public const FLOW_LEVELS = [
         'pending'   => 1,
@@ -124,6 +202,18 @@ class Order extends BaseModel
     public function findByCode(string $code): ?array
     {
         return $this->db->fetch('SELECT * FROM orders WHERE order_code = :code LIMIT 1', ['code' => $code]);
+    }
+
+    public function findByTrackingOrCode(string $query): ?array
+    {
+        $clean = trim($query);
+        if ($clean === '') {
+            return null;
+        }
+        return $this->db->fetch(
+            "SELECT * FROM `{$this->table}` WHERE `order_code` = :q OR `tracking_code` = :q OR `phone` = :q ORDER BY `id` DESC LIMIT 1",
+            ['q' => $clean]
+        );
     }
 
     public function items(int $orderId): array

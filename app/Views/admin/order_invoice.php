@@ -9,6 +9,7 @@ $paymentLabels = [
     'momo'  => 'Thanh toán qua Ví điện tử MoMo',
 ];
 $paymentName = $paymentLabels[$order['payment_method'] ?? 'cod'] ?? strtoupper($order['payment_method'] ?? 'COD');
+$carrierInfo = \App\Models\Order::getCarrierInfo($order['shipping_carrier'] ?? null);
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -308,10 +309,28 @@ $paymentName = $paymentLabels[$order['payment_method'] ?? 'cod'] ?? strtoupper($
                     <?= ($order['order_type'] ?? '') === 'project' ? 'Dự án / Giá công trình' : 'Bán lẻ tiêu chuẩn' ?>
                 </span>
             </div>
-            <?php if (!empty($order['note'])): ?>
+            <?php if (!empty($order['shipping_carrier']) || !empty($order['tracking_code'])): ?>
+                <div class="info-row">
+                    <span class="info-label">Vận chuyển:</span>
+                    <span class="info-val" style="color: #059669; font-weight: 700;">
+                        <?= e($carrierInfo['name'] ?? strtoupper($order['shipping_carrier'] ?? 'Xe Giao Hàng')) ?>
+                    </span>
+                </div>
+                <?php if (!empty($order['tracking_code'])): ?>
+                    <div class="info-row">
+                        <span class="info-label">Mã vận đơn:</span>
+                        <span class="info-val" style="font-family: monospace; font-weight: 700; color: #004098;">
+                            <?= e($order['tracking_code']) ?>
+                        </span>
+                    </div>
+                <?php endif; ?>
+            <?php endif; ?>
+            <?php if (!empty($order['note']) || !empty($order['shipping_note'])): ?>
                 <div class="info-row">
                     <span class="info-label">Ghi chú giao:</span>
-                    <span class="info-val" style="color: #b45309;"><?= e($order['note']) ?></span>
+                    <span class="info-val" style="color: #b45309;">
+                        <?= e($order['shipping_note'] ?: $order['note']) ?>
+                    </span>
                 </div>
             <?php endif; ?>
         </div>
@@ -397,9 +416,9 @@ $paymentName = $paymentLabels[$order['payment_method'] ?? 'cod'] ?? strtoupper($
             <div class="sig-name">Bộ Phận Kho</div>
         </div>
         <div>
-            <div class="sig-role">Nhân Viên Giao Hàng</div>
+            <div class="sig-role">Đơn Vị Giao Hàng</div>
             <div class="sig-sub">(Ký, giao nguyên seal)</div>
-            <div class="sig-name">Đội Vận Chuyển</div>
+            <div class="sig-name"><?= e($carrierInfo['short_name'] ?? 'Đội Vận Chuyển') ?></div>
         </div>
         <div>
             <div class="sig-role">Người Nhận Hàng</div>

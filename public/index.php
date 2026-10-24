@@ -136,6 +136,8 @@ $router->post('/gio-hang/xoa', [CartController::class, 'remove']);
 $router->post('/gio-hang/dat-hang', [CartController::class, 'checkout']);
 $router->get('/dat-hang-thanh-cong/{code}', [CartController::class, 'success']);
 $router->get('/don-hang/xem-email/{code}', [CartController::class, 'viewOrderEmail']);
+$router->get('/tra-cuu-don-hang', [HomeController::class, 'trackOrder']);
+$router->post('/tra-cuu-don-hang', [HomeController::class, 'trackOrder']);
 
 // APIs địa giới hành chính Việt Nam (Tỉnh/Thành -> Quận/Huyện -> Phường/Xã)
 $router->get('/api/locations/provinces', [CartController::class, 'getProvinces']);

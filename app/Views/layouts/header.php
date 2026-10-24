@@ -66,6 +66,8 @@ $navSeries     = $navSeries ?? (new ProductSeries())->active();
                 <span class="topbar-text">Tổng kho thiết bị điện Panasonic tại TP.HCM & Long An • 100% CO/CQ, VAT đầy đủ</span>
             </div>
             <div class="topbar-right hide-sm">
+                <a href="<?= url('/tra-cuu-don-hang') ?>" class="topbar-link"><?= icon('truck') ?> Tra Cứu Vận Đơn</a>
+                <span class="topbar-dot">•</span>
                 <a href="<?= url('/du-an') ?>" class="topbar-link"><?= icon('building') ?> Dự Án Thực Tế</a>
                 <span class="topbar-dot">•</span>
                 <a href="<?= url('/tai-catalogue') ?>" class="topbar-link"><?= icon('file-text') ?> Bảng Giá Catalogue 2026</a>
@@ -155,6 +157,7 @@ $navSeries     = $navSeries ?? (new ProductSeries())->active();
                             <ul class="huser-dd-nav">
                                 <li><a href="<?= url('/tai-khoan') ?>"><?= icon('user') ?> Thông tin tài khoản</a></li>
                                 <li><a href="<?= url('/tai-khoan#orders') ?>"><?= icon('cart') ?> Đơn hàng đã đặt</a></li>
+                                <li><a href="<?= url('/tra-cuu-don-hang') ?>"><?= icon('truck') ?> Tra cứu hành trình đơn hàng</a></li>
                                 <li class="huser-dd-divider"></li>
                                 <li><button type="button" class="huser-dd-logout" id="btnHeaderLogout"><?= icon('logout') ?> Đăng xuất</button></li>
                             </ul>
