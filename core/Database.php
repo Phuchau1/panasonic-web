@@ -44,10 +44,47 @@ final class Database
             }
 
             $this->pdo = new PDO($dsn, $cfg['username'], $cfg['password'], $options);
+            $this->ensureTables();
         } catch (PDOException $e) {
             // Không lộ thông tin đăng nhập DB ra ngoài
             error_log('[DB] Connection failed: ' . $e->getMessage());
             throw new RuntimeException('Không thể kết nối cơ sở dữ liệu. Vui lòng kiểm tra cấu hình config/database.php.');
+        }
+    }
+
+    /**
+     * Tự động bảo đảm các bảng cơ sở dữ liệu cốt lõi luôn tồn tại trên mọi môi trường (Render, Docker, Local).
+     */
+    private function ensureTables(): void
+    {
+        static $checked = false;
+        if ($checked) {
+            return;
+        }
+        $checked = true;
+
+        try {
+            $this->pdo->exec("
+                CREATE TABLE IF NOT EXISTS `contacts` (
+                  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                  `name` varchar(150) NOT NULL,
+                  `phone` varchar(30) NOT NULL,
+                  `email` varchar(150) DEFAULT NULL,
+                  `address` varchar(255) DEFAULT NULL,
+                  `message` text NOT NULL,
+                  `status` enum('new','contacted','closed') NOT NULL DEFAULT 'new',
+                  `note` text DEFAULT NULL,
+                  `ip_address` varchar(45) DEFAULT NULL,
+                  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                  PRIMARY KEY (`id`),
+                  KEY `idx_contacts_status` (`status`),
+                  KEY `idx_contacts_phone` (`phone`),
+                  KEY `idx_contacts_created` (`created_at`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            ");
+        } catch (\Throwable $e) {
+            error_log('[DB AutoSchema] ' . $e->getMessage());
         }
     }
 
