@@ -2,6 +2,7 @@
 /** @var array $order */
 /** @var array $items */
 /** @var array $statuses */
+$allowedStatuses = $allowedStatuses ?? \App\Models\Order::allowedNextStatuses($order['status'] ?? 'pending');
 ?>
 
 <div class="admin-card" style="max-width: 900px; margin: 0 auto;">
@@ -18,23 +19,129 @@
         </div>
     </div>
 
-    <!-- Cập nhật trạng thái đơn hàng -->
-    <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-        <div>
-            <strong>Trạng thái hiện tại:</strong> 
-            <span class="badge badge--primary"><?= e($statuses[$order['status']] ?? $order['status']) ?></span>
-            (Đơn <?= $order['order_type'] === 'project' ? 'Giá Công Trình' : 'Giá Bán Lẻ' ?>)
+    <!-- Quy trình đơn hàng 4 bước (Quy tắc nghiệp vụ: Chỉ được tiến bước, không được lùi) -->
+    <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+            <div style="font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #475569;">
+                Tiến trình xử lý đơn hàng
+            </div>
+            <div style="font-size: 0.75rem; color: #004098; font-weight: 700; background: #eff6ff; border: 1px solid #bfdbfe; padding: 3px 9px; border-radius: 6px; display: inline-flex; align-items: center; gap: 0.35rem;">
+                <?= icon('shield') ?> Chỉ được tiến &bull; Không được lùi
+            </div>
         </div>
-        <form action="<?= url('/admin/don-hang/trang-thai/' . $order['id']) ?>" method="post" style="display: flex; gap: 0.5rem;">
-            <?= csrf_field() ?>
-            <select name="status" class="field__input field__input--sm">
-                <?php foreach ($statuses as $stVal => $stText): ?>
-                    <option value="<?= e($stVal) ?>" <?= $order['status'] === $stVal ? 'selected' : '' ?>><?= e($stText) ?></option>
+
+        <?php if ($order['status'] === 'cancelled'): ?>
+            <div style="padding: 0.85rem 1rem; background: #fef2f2; border: 1px dashed #fca5a5; border-radius: 6px; color: #b91c1c; font-size: 0.88rem; display: flex; align-items: center; gap: 0.5rem;">
+                <?= icon('alert') ?> <strong>Đơn hàng đã huỷ:</strong> Toàn bộ tồn kho đã được hoàn trả, quy trình đã dừng và khóa lại (không thể chuyển lùi).
+            </div>
+        <?php else: ?>
+            <div style="display: flex; align-items: center; justify-content: space-between; position: relative;">
+                <?php 
+                $steps = [
+                    'pending'   => '1. Chờ xác nhận',
+                    'confirmed' => '2. Đã xác nhận',
+                    'shipping'  => '3. Đang giao hàng',
+                    'completed' => '4. Hoàn thành',
+                ];
+                $stepKeys = array_keys($steps);
+                $curIdx = array_search($order['status'], $stepKeys, true);
+                if ($curIdx === false) $curIdx = 0;
+                ?>
+                <?php foreach ($stepKeys as $idx => $sKey): 
+                    $isPassed = $idx < $curIdx;
+                    $isCurrent = $idx === $curIdx;
+                    $isFuture = $idx > $curIdx;
+                ?>
+                    <div style="display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; z-index: 2;">
+                        <div style="width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.88rem; font-weight: 700; transition: all 0.2s;
+                            <?= $isPassed ? 'background: #059669; color: #fff;' : ($isCurrent ? 'background: #004098; color: #fff; box-shadow: 0 0 0 4px rgba(0,64,152,0.18);' : 'background: #f1f5f9; color: #94a3b8; border: 1.5px solid #cbd5e1;') ?>">
+                            <?php if ($isPassed): ?>
+                                ✓
+                            <?php else: ?>
+                                <?= $idx + 1 ?>
+                            <?php endif; ?>
+                        </div>
+                        <span style="font-size: 0.78rem; font-weight: <?= $isCurrent ? '700' : '600' ?>; color: <?= $isCurrent ? '#004098' : ($isPassed ? '#059669' : '#94a3b8') ?>; margin-top: 0.4rem; text-align: center;">
+                            <?= $steps[$sKey] ?>
+                        </span>
+                    </div>
+                    <?php if ($idx < count($stepKeys) - 1): ?>
+                        <div style="flex: 1; height: 3px; background: <?= $idx < $curIdx ? '#059669' : '#e2e8f0' ?>; margin-top: -18px; position: relative; z-index: 1;"></div>
+                    <?php endif; ?>
                 <?php endforeach; ?>
-            </select>
-            <button type="submit" class="btn btn--primary btn--sm">Cập nhật</button>
-        </form>
+            </div>
+        <?php endif; ?>
     </div>
+
+    <!-- Cập nhật trạng thái đơn hàng (Chỉ cho phép TIẾN bước) -->
+    <?php if ($order['status'] === 'completed'): ?>
+        <!-- Khi đơn hàng đã Hoàn thành: Khóa hoàn toàn, không hiển thị dropdown lùi -->
+        <div style="background: #ecfdf5; border: 1.5px solid #a7f3d0; padding: 1rem 1.25rem; border-radius: 8px; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div style="width: 38px; height: 38px; border-radius: 50%; background: #059669; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+                    <?= icon('check-circle') ?>
+                </div>
+                <div>
+                    <div style="font-weight: 700; color: #065f46; font-size: 0.98rem;">Đơn hàng đã Hoàn thành</div>
+                    <div style="font-size: 0.8rem; color: #047857; margin-top: 2px;">
+                        Đơn hàng đã kết thúc quy trình thành công. <strong>Trạng thái đã khóa vĩnh viễn (chỉ được tiến, không được lùi).</strong>
+                    </div>
+                </div>
+            </div>
+            <span class="badge badge--success" style="padding: 0.45rem 0.9rem; font-size: 0.85rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.35rem;">
+                <?= icon('shield') ?> Đã Khóa Quy Trình
+            </span>
+        </div>
+    <?php elseif ($order['status'] === 'cancelled'): ?>
+        <!-- Khi đơn hàng đã Huỷ: Khóa hoàn toàn -->
+        <div style="background: #fef2f2; border: 1.5px solid #fecaca; padding: 1rem 1.25rem; border-radius: 8px; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div style="width: 38px; height: 38px; border-radius: 50%; background: #dc2626; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+                    <?= icon('alert') ?>
+                </div>
+                <div>
+                    <div style="font-weight: 700; color: #991b1b; font-size: 0.98rem;">Đơn hàng đã bị Huỷ</div>
+                    <div style="font-size: 0.8rem; color: #b91c1c; margin-top: 2px;">
+                        Tồn kho đã được hoàn lại. Đơn hàng kết thúc, không thể mở lại hay chuyển lùi trạng thái.
+                    </div>
+                </div>
+            </div>
+            <span class="badge badge--danger" style="padding: 0.45rem 0.9rem; font-size: 0.85rem; font-weight: 700;">
+                Đã Huỷ
+            </span>
+        </div>
+    <?php else: ?>
+        <!-- Đơn hàng đang xử lý (pending / confirmed / shipping): Chỉ hiển thị các bước TIẾN -->
+        <div style="background: #f8fafc; border: 1.5px solid #e2e8f0; padding: 1rem 1.25rem; border-radius: 8px; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <div style="font-size: 0.78rem; color: #64748b; margin-bottom: 0.2rem; text-transform: uppercase; font-weight: 600;">Trạng thái hiện tại:</div>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span class="badge badge--primary" style="font-size: 0.92rem; padding: 0.35rem 0.75rem; font-weight: 700;">
+                        <?= e($statuses[$order['status']] ?? $order['status']) ?>
+                    </span>
+                    <span style="font-size: 0.82rem; color: #64748b;">(Đơn <?= $order['order_type'] === 'project' ? 'Giá Công Trình' : 'Giá Bán Lẻ' ?>)</span>
+                </div>
+            </div>
+
+            <form action="<?= url('/admin/don-hang/trang-thai/' . $order['id']) ?>" method="post" style="display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;">
+                <?= csrf_field() ?>
+                <div style="display: flex; align-items: center; gap: 0.45rem;">
+                    <label style="font-size: 0.85rem; font-weight: 600; color: #334155; white-space: nowrap;">Chuyển tiến sang:</label>
+                    <select name="status" class="field__input field__input--sm" required style="min-width: 190px; font-weight: 600; border-color: #004098 !important;">
+                        <option value="" disabled selected>-- Chọn bước tiếp theo --</option>
+                        <?php foreach ($allowedStatuses as $stVal => $stText): ?>
+                            <option value="<?= e($stVal) ?>" style="<?= $stVal === 'cancelled' ? 'color: #dc2626;' : 'color: #004098; font-weight: 600;' ?>">
+                                <?= $stVal === 'cancelled' ? '✕ Huỷ: ' : '➔ Tiến: ' ?><?= e($stText) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn--primary btn--sm" onclick="return confirm('Xác nhận CHUYỂN TIẾN trạng thái đơn hàng?\n\nLưu ý: Quy trình chỉ được phép TIẾN bước, không được phép quay lùi lại!')" style="font-weight: 700; padding: 0.5rem 1rem;">
+                    Cập nhật
+                </button>
+            </form>
+        </div>
+    <?php endif; ?>
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
         <div>

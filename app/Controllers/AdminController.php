@@ -426,11 +426,13 @@ class AdminController extends Controller
         if (!$order) {
             $this->abort(404);
         }
+        $allowedStatuses = Order::allowedNextStatuses($order['status'] ?? 'pending');
         $this->render('admin/order_detail', [
-            'title'    => 'Đơn hàng #' . $order['order_code'],
-            'order'    => $order,
-            'items'    => $model->items($id),
-            'statuses' => Order::STATUSES,
+            'title'           => 'Đơn hàng #' . $order['order_code'],
+            'order'           => $order,
+            'items'           => $model->items($id),
+            'statuses'        => Order::STATUSES,
+            'allowedStatuses' => $allowedStatuses,
         ], 'admin');
     }
 
@@ -438,22 +440,71 @@ class AdminController extends Controller
     {
         $this->verifyCsrf();
         $id = (int) $id;
-        $status = $this->input('status');
-        if (isset(Order::STATUSES[$status])) {
-            (new Order())->update($id, ['status' => $status]);
+        $orderModel = new Order();
+        $order = $orderModel->find($id);
+        if (!$order) {
+            $this->abort(404, 'Không tìm thấy đơn hàng cần cập nhật.');
+        }
+
+        $newStatus = (string) $this->input('status');
+        $currentStatus = (string) ($order['status'] ?? 'pending');
+
+        if (!isset(Order::STATUSES[$newStatus])) {
             if ($this->isAjax()) {
-                $this->json([
-                    'success' => true,
-                    'status'  => $status,
-                    'message' => 'Đã cập nhật trạng thái đơn hàng: ' . Order::STATUSES[$status]
-                ]);
+                $this->json(['success' => false, 'message' => 'Trạng thái không hợp lệ.'], 422);
+                return;
             }
-            flash('success', 'Đã cập nhật trạng thái đơn hàng.');
-        } else {
+            flash('error', 'Trạng thái không hợp lệ.');
+            $this->redirect('/admin/don-hang/' . $id);
+            return;
+        }
+
+        if ($newStatus === $currentStatus) {
+            flash('info', 'Trạng thái đơn hàng không thay đổi.');
+            $this->redirect('/admin/don-hang/' . $id);
+            return;
+        }
+
+        // Quy tắc nghiệp vụ: Chỉ được TIẾN, không được LÙI
+        if (!Order::canTransition($currentStatus, $newStatus)) {
+            $msg = 'Quy trình xử lý đơn hàng chỉ được phép TIẾN bước (Chờ xác nhận → Đã xác nhận → Đang giao hàng → Hoàn thành), tuyệt đối không được phép chuyển LÙI lại trạng thái cũ!';
             if ($this->isAjax()) {
-                $this->json(['success' => false, 'message' => 'Trạng thái không hợp lệ'], 422);
+                $this->json(['success' => false, 'message' => $msg], 422);
+                return;
+            }
+            flash('error', $msg);
+            $this->redirect('/admin/don-hang/' . $id);
+            return;
+        }
+
+        // Cập nhật trạng thái mới hợp lệ
+        $orderModel->update($id, ['status' => $newStatus]);
+
+        // Nếu chuyển sang trạng thái đã hủy: hoàn trả tồn kho tự động
+        if ($newStatus === 'cancelled' && $currentStatus !== 'cancelled') {
+            $items = $orderModel->items($id);
+            $db = \Core\Database::getInstance();
+            foreach ($items as $it) {
+                if (!empty($it['product_id']) && !empty($it['quantity'])) {
+                    $db->query('UPDATE products SET stock = stock + :qty WHERE id = :id', [
+                        'qty' => (int) $it['quantity'],
+                        'id'  => (int) $it['product_id'],
+                    ]);
+                }
             }
         }
+
+        $statusLabel = Order::STATUSES[$newStatus] ?? $newStatus;
+        if ($this->isAjax()) {
+            $this->json([
+                'success' => true,
+                'status'  => $newStatus,
+                'message' => 'Đã chuyển tiến trạng thái đơn hàng: ' . $statusLabel,
+            ]);
+            return;
+        }
+
+        flash('success', 'Đã chuyển tiến trạng thái đơn hàng thành công: ' . $statusLabel);
         $this->redirect('/admin/don-hang/' . $id);
     }
 

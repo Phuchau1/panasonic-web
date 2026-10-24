@@ -22,6 +22,53 @@ class Order extends BaseModel
         'cancelled' => 'Đã huỷ',
     ];
 
+    public const FLOW_LEVELS = [
+        'pending'   => 1,
+        'confirmed' => 2,
+        'shipping'  => 3,
+        'completed' => 4,
+        'cancelled' => 99,
+    ];
+
+    /**
+     * Danh sách các trạng thái được phép TIẾN từ trạng thái hiện tại (chỉ được tiến, không được lùi).
+     */
+    public static function allowedNextStatuses(string $currentStatus): array
+    {
+        return match ($currentStatus) {
+            'pending'   => [
+                'confirmed' => 'Đã xác nhận',
+                'shipping'  => 'Đang giao hàng',
+                'completed' => 'Hoàn thành',
+                'cancelled' => 'Đã huỷ',
+            ],
+            'confirmed' => [
+                'shipping'  => 'Đang giao hàng',
+                'completed' => 'Hoàn thành',
+                'cancelled' => 'Đã huỷ',
+            ],
+            'shipping'  => [
+                'completed' => 'Hoàn thành',
+                'cancelled' => 'Đã huỷ',
+            ],
+            'completed' => [], // Đã hoàn thành: Khóa quy trình, không được phép chuyển lùi
+            'cancelled' => [], // Đã huỷ: Khóa quy trình, không được phép chuyển lùi
+            default     => [],
+        };
+    }
+
+    /**
+     * Kiểm tra chuyển trạng thái có hợp lệ theo chiều TIẾN hay không.
+     */
+    public static function canTransition(string $currentStatus, string $newStatus): bool
+    {
+        if ($currentStatus === $newStatus) {
+            return true;
+        }
+        $allowed = self::allowedNextStatuses($currentStatus);
+        return array_key_exists($newStatus, $allowed);
+    }
+
     /**
      * Tạo đơn hàng + chi tiết + trừ tồn kho trong một transaction.
      *
