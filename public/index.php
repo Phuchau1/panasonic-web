@@ -163,18 +163,47 @@ $router->post('/admin/login', [AdminController::class, 'login']);
 $router->get('/admin/logout', [AdminController::class, 'logout']);
 
 $router->get('/admin', [AdminController::class, 'dashboard'], $adminAuth);
+$router->get('/admin/thong-ke', [AdminController::class, 'analytics'], $adminAuth);
+
+// Quản lý sản phẩm & Kho
 $router->get('/admin/san-pham', [AdminController::class, 'products'], $adminAuth);
 $router->get('/admin/san-pham/them', [AdminController::class, 'createProduct'], $adminAuth);
 $router->post('/admin/san-pham/them', [AdminController::class, 'storeProduct'], $adminAuth);
 $router->get('/admin/san-pham/sua/{id}', [AdminController::class, 'editProduct'], $adminAuth);
 $router->post('/admin/san-pham/sua/{id}', [AdminController::class, 'updateProduct'], $adminAuth);
 $router->post('/admin/san-pham/xoa/{id}', [AdminController::class, 'deleteProduct'], $adminAuth);
+
+// Quản lý danh mục thiết bị
+$router->get('/admin/danh-muc', [AdminController::class, 'categories'], $adminAuth);
+$router->get('/admin/danh-muc/them', [AdminController::class, 'createCategory'], $adminAuth);
+$router->post('/admin/danh-muc/them', [AdminController::class, 'storeCategory'], $adminAuth);
+$router->get('/admin/danh-muc/sua/{id}', [AdminController::class, 'editCategory'], $adminAuth);
+$router->post('/admin/danh-muc/sua/{id}', [AdminController::class, 'updateCategory'], $adminAuth);
+$router->post('/admin/danh-muc/trang-thai/{id}', [AdminController::class, 'toggleCategoryStatus'], $adminAuth);
+$router->post('/admin/danh-muc/xoa/{id}', [AdminController::class, 'deleteCategory'], $adminAuth);
+
+// Quản lý dòng Series sản phẩm
+$router->get('/admin/dong-series', [AdminController::class, 'series'], $adminAuth);
+$router->get('/admin/dong-series/them', [AdminController::class, 'createSeries'], $adminAuth);
+$router->post('/admin/dong-series/them', [AdminController::class, 'storeSeries'], $adminAuth);
+$router->get('/admin/dong-series/sua/{id}', [AdminController::class, 'editSeries'], $adminAuth);
+$router->post('/admin/dong-series/sua/{id}', [AdminController::class, 'updateSeries'], $adminAuth);
+$router->post('/admin/dong-series/trang-thai/{id}', [AdminController::class, 'toggleSeriesStatus'], $adminAuth);
+$router->post('/admin/dong-series/xoa/{id}', [AdminController::class, 'deleteSeries'], $adminAuth);
+
+// Đơn hàng & Báo giá
 $router->get('/admin/bao-gia', [AdminController::class, 'quotes'], $adminAuth);
 $router->post('/admin/bao-gia/trang-thai/{id}', [AdminController::class, 'updateQuoteStatus'], $adminAuth);
 $router->get('/admin/bao-gia/tai-file/{id}', [AdminController::class, 'downloadBom'], $adminAuth);
 $router->get('/admin/don-hang', [AdminController::class, 'orders'], $adminAuth);
 $router->get('/admin/don-hang/{id}', [AdminController::class, 'orderDetail'], $adminAuth);
+$router->get('/admin/don-hang/in-hoa-don/{id}', [AdminController::class, 'printOrder'], $adminAuth);
 $router->post('/admin/don-hang/trang-thai/{id}', [AdminController::class, 'updateOrderStatus'], $adminAuth);
+
+// Hộp thư liên hệ từ khách hàng
+$router->get('/admin/lien-he', [AdminController::class, 'contacts'], $adminAuth);
+$router->post('/admin/lien-he/trang-thai/{id}', [AdminController::class, 'updateContactStatus'], $adminAuth);
+$router->post('/admin/lien-he/xoa/{id}', [AdminController::class, 'deleteContact'], $adminAuth);
 
 // Quản lý thành viên & Khách hàng
 $router->get('/admin/thanh-vien', [AdminController::class, 'users'], $adminAuth);

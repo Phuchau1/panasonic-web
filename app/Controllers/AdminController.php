@@ -723,6 +723,423 @@ class AdminController extends Controller
     }
 
     // ------------------------------------------------------------------
+    // Danh mục sản phẩm
+    // ------------------------------------------------------------------
+    public function categories(): void
+    {
+        $db = \Core\Database::getInstance();
+        $categories = $db->fetchAll(
+            "SELECT c.*, COUNT(p.id) AS product_count
+             FROM categories c
+             LEFT JOIN products p ON p.category_id = c.id
+             GROUP BY c.id
+             ORDER BY c.sort_order ASC, c.name ASC"
+        );
+
+        $this->render('admin/categories', [
+            'title'      => 'Quản lý danh mục thiết bị điện',
+            'categories' => $categories,
+        ], 'admin');
+    }
+
+    public function createCategory(): void
+    {
+        $this->render('admin/category_form', [
+            'title'    => 'Thêm danh mục thiết bị mới',
+            'category' => null,
+        ], 'admin');
+    }
+
+    public function storeCategory(): void
+    {
+        $this->verifyCsrf();
+        $name = $this->input('name');
+        if (!$name) {
+            flash('error', 'Vui lòng nhập tên danh mục.');
+            $this->redirect('/admin/danh-muc/them');
+        }
+
+        $slug = $this->input('slug') ?: slugify($name);
+        $icon = $this->input('icon') ?: 'grid';
+        $description = $this->input('description');
+        $sortOrder = $this->inputInt('sort_order', 0);
+        $status = isset($_POST['status']) ? 1 : 0;
+
+        (new Category())->create([
+            'name'        => $name,
+            'slug'        => $slug,
+            'icon'        => $icon,
+            'description' => $description,
+            'sort_order'  => $sortOrder,
+            'status'      => $status,
+        ]);
+
+        flash('success', 'Đã thêm danh mục thiết bị thành công!');
+        $this->redirect('/admin/danh-muc');
+    }
+
+    public function editCategory(int|string $id): void
+    {
+        $category = (new Category())->find((int) $id);
+        if (!$category) {
+            $this->abort(404);
+        }
+
+        $this->render('admin/category_form', [
+            'title'    => 'Chỉnh sửa danh mục: ' . $category['name'],
+            'category' => $category,
+        ], 'admin');
+    }
+
+    public function updateCategory(int|string $id): void
+    {
+        $this->verifyCsrf();
+        $id = (int) $id;
+        $model = new Category();
+        $cat = $model->find($id);
+        if (!$cat) {
+            $this->abort(404);
+        }
+
+        $name = $this->input('name');
+        if (!$name) {
+            flash('error', 'Vui lòng nhập tên danh mục.');
+            $this->redirect('/admin/danh-muc/sua/' . $id);
+        }
+
+        $slug = $this->input('slug') ?: slugify($name);
+        $icon = $this->input('icon') ?: 'grid';
+        $description = $this->input('description');
+        $sortOrder = $this->inputInt('sort_order', 0);
+        $status = isset($_POST['status']) ? 1 : 0;
+
+        $model->update($id, [
+            'name'        => $name,
+            'slug'        => $slug,
+            'icon'        => $icon,
+            'description' => $description,
+            'sort_order'  => $sortOrder,
+            'status'      => $status,
+        ]);
+
+        flash('success', 'Đã cập nhật danh mục thành công!');
+        $this->redirect('/admin/danh-muc');
+    }
+
+    public function toggleCategoryStatus(int|string $id): void
+    {
+        $this->verifyCsrf();
+        $id = (int) $id;
+        $model = new Category();
+        $cat = $model->find($id);
+        if ($cat) {
+            $newStatus = $cat['status'] ? 0 : 1;
+            $model->update($id, ['status' => $newStatus]);
+            flash('success', 'Đã thay đổi trạng thái danh mục: ' . ($newStatus ? 'Đang hoạt động' : 'Tạm ẩn'));
+        }
+        $this->redirect('/admin/danh-muc');
+    }
+
+    public function deleteCategory(int|string $id): void
+    {
+        $this->verifyCsrf();
+        $id = (int) $id;
+        $db = \Core\Database::getInstance();
+        $productCount = (int) $db->fetchColumn('SELECT COUNT(*) FROM products WHERE category_id = :cid', ['cid' => $id]);
+        if ($productCount > 0) {
+            flash('error', "Không thể xóa danh mục này vì đang có {$productCount} sản phẩm trực thuộc!");
+            $this->redirect('/admin/danh-muc');
+        }
+
+        (new Category())->delete($id);
+        flash('success', 'Đã xóa danh mục thành công!');
+        $this->redirect('/admin/danh-muc');
+    }
+
+    // ------------------------------------------------------------------
+    // Dòng Series sản phẩm
+    // ------------------------------------------------------------------
+    public function series(): void
+    {
+        $db = \Core\Database::getInstance();
+        $series = $db->fetchAll(
+            "SELECT s.*, COUNT(p.id) AS product_count
+             FROM product_series s
+             LEFT JOIN products p ON p.series_id = s.id
+             GROUP BY s.id
+             ORDER BY s.sort_order ASC, s.name ASC"
+        );
+
+        $this->render('admin/series', [
+            'title'  => 'Quản lý dòng Series thiết bị Panasonic',
+            'series' => $series,
+        ], 'admin');
+    }
+
+    public function createSeries(): void
+    {
+        $this->render('admin/series_form', [
+            'title'  => 'Thêm dòng Series mới',
+            'series' => null,
+        ], 'admin');
+    }
+
+    public function storeSeries(): void
+    {
+        $this->verifyCsrf();
+        $name = $this->input('name');
+        if (!$name) {
+            flash('error', 'Vui lòng nhập tên dòng series.');
+            $this->redirect('/admin/dong-series/them');
+        }
+
+        $slug = $this->input('slug') ?: slugify($name);
+        $tagline = $this->input('tagline');
+        $color = $this->input('color') ?: '#004098';
+        $catalogUrl = $this->input('catalog_url');
+        $sortOrder = $this->inputInt('sort_order', 0);
+        $status = isset($_POST['status']) ? 1 : 0;
+
+        (new ProductSeries())->create([
+            'name'        => $name,
+            'slug'        => $slug,
+            'tagline'     => $tagline,
+            'color'       => $color,
+            'catalog_url' => $catalogUrl,
+            'sort_order'  => $sortOrder,
+            'status'      => $status,
+        ]);
+
+        flash('success', 'Đã thêm dòng Series thành công!');
+        $this->redirect('/admin/dong-series');
+    }
+
+    public function editSeries(int|string $id): void
+    {
+        $series = (new ProductSeries())->find((int) $id);
+        if (!$series) {
+            $this->abort(404);
+        }
+
+        $this->render('admin/series_form', [
+            'title'  => 'Chỉnh sửa dòng Series: ' . $series['name'],
+            'series' => $series,
+        ], 'admin');
+    }
+
+    public function updateSeries(int|string $id): void
+    {
+        $this->verifyCsrf();
+        $id = (int) $id;
+        $model = new ProductSeries();
+        $s = $model->find($id);
+        if (!$s) {
+            $this->abort(404);
+        }
+
+        $name = $this->input('name');
+        if (!$name) {
+            flash('error', 'Vui lòng nhập tên dòng series.');
+            $this->redirect('/admin/dong-series/sua/' . $id);
+        }
+
+        $slug = $this->input('slug') ?: slugify($name);
+        $tagline = $this->input('tagline');
+        $color = $this->input('color') ?: '#004098';
+        $catalogUrl = $this->input('catalog_url');
+        $sortOrder = $this->inputInt('sort_order', 0);
+        $status = isset($_POST['status']) ? 1 : 0;
+
+        $model->update($id, [
+            'name'        => $name,
+            'slug'        => $slug,
+            'tagline'     => $tagline,
+            'color'       => $color,
+            'catalog_url' => $catalogUrl,
+            'sort_order'  => $sortOrder,
+            'status'      => $status,
+        ]);
+
+        flash('success', 'Đã cập nhật dòng Series thành công!');
+        $this->redirect('/admin/dong-series');
+    }
+
+    public function toggleSeriesStatus(int|string $id): void
+    {
+        $this->verifyCsrf();
+        $id = (int) $id;
+        $model = new ProductSeries();
+        $s = $model->find($id);
+        if ($s) {
+            $newStatus = $s['status'] ? 0 : 1;
+            $model->update($id, ['status' => $newStatus]);
+            flash('success', 'Đã cập nhật trạng thái dòng Series!');
+        }
+        $this->redirect('/admin/dong-series');
+    }
+
+    public function deleteSeries(int|string $id): void
+    {
+        $this->verifyCsrf();
+        $id = (int) $id;
+        $db = \Core\Database::getInstance();
+        $productCount = (int) $db->fetchColumn('SELECT COUNT(*) FROM products WHERE series_id = :sid', ['sid' => $id]);
+        if ($productCount > 0) {
+            flash('error', "Không thể xóa dòng Series này vì đang có {$productCount} sản phẩm trực thuộc!");
+            $this->redirect('/admin/dong-series');
+        }
+
+        (new ProductSeries())->delete($id);
+        flash('success', 'Đã xóa dòng Series thành công!');
+        $this->redirect('/admin/dong-series');
+    }
+
+    // ------------------------------------------------------------------
+    // Thống kê & Báo cáo Doanh nghiệp
+    // ------------------------------------------------------------------
+    public function analytics(): void
+    {
+        $db = \Core\Database::getInstance();
+
+        // 1. Tổng hợp doanh thu theo các mốc
+        $totalRevenue = (float) $db->fetchColumn("SELECT COALESCE(SUM(total), 0) FROM orders WHERE status != 'cancelled'");
+        $monthlyRevenue = (float) $db->fetchColumn("SELECT COALESCE(SUM(total), 0) FROM orders WHERE status != 'cancelled' AND MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE())");
+        $todayRevenue = (float) $db->fetchColumn("SELECT COALESCE(SUM(total), 0) FROM orders WHERE status != 'cancelled' AND DATE(created_at) = CURRENT_DATE()");
+        $totalOrdersCount = (int) $db->fetchColumn("SELECT COUNT(*) FROM orders");
+        $completedOrdersCount = (int) $db->fetchColumn("SELECT COUNT(*) FROM orders WHERE status = 'completed'");
+        $avgOrderValue = $completedOrdersCount > 0 ? (int) ($totalRevenue / $completedOrdersCount) : 0;
+
+        // 2. Thống kê doanh thu 6 tháng gần nhất
+        $monthlyStats = $db->fetchAll(
+            "SELECT 
+                DATE_FORMAT(created_at, '%m/%Y') AS month_label,
+                COUNT(id) AS order_count,
+                COALESCE(SUM(total), 0) AS revenue
+             FROM orders 
+             WHERE status != 'cancelled' AND created_at >= (NOW() - INTERVAL 6 MONTH)
+             GROUP BY DATE_FORMAT(created_at, '%m/%Y'), YEAR(created_at), MONTH(created_at)
+             ORDER BY YEAR(created_at) ASC, MONTH(created_at) ASC"
+        );
+
+        // 3. Cơ cấu đơn hàng theo trạng thái
+        $statusBreakdown = $db->fetchAll(
+            "SELECT status, COUNT(*) AS count, COALESCE(SUM(total), 0) AS sum_total
+             FROM orders 
+             GROUP BY status"
+        );
+
+        // 4. Cơ cấu phương thức thanh toán
+        $paymentMethods = $db->fetchAll(
+            "SELECT payment_method, COUNT(*) AS count, COALESCE(SUM(total), 0) AS sum_total
+             FROM orders
+             GROUP BY payment_method"
+        );
+
+        // 5. Top 10 sản phẩm bán chạy nhất
+        $topProducts = $db->fetchAll(
+            "SELECT p.id, p.name, p.sku, p.thumbnail, p.price,
+                    SUM(oi.quantity) AS total_qty,
+                    SUM(oi.line_total) AS total_sales
+             FROM order_items oi
+             JOIN products p ON p.id = oi.product_id
+             JOIN orders o ON o.id = oi.order_id
+             WHERE o.status != 'cancelled'
+             GROUP BY p.id, p.name, p.sku, p.thumbnail, p.price
+             ORDER BY total_sales DESC
+             LIMIT 10"
+        );
+
+        // 6. Cảnh báo tồn kho thấp (< 20)
+        $lowStockProducts = $db->fetchAll(
+            "SELECT id, name, sku, stock, price, thumbnail 
+             FROM products 
+             WHERE status = 1 AND stock < 20 
+             ORDER BY stock ASC 
+             LIMIT 10"
+        );
+
+        $this->render('admin/analytics', [
+            'title'                => 'Báo cáo doanh thu & Thống kê kinh doanh',
+            'totalRevenue'         => $totalRevenue,
+            'monthlyRevenue'       => $monthlyRevenue,
+            'todayRevenue'         => $todayRevenue,
+            'totalOrdersCount'     => $totalOrdersCount,
+            'completedOrdersCount' => $completedOrdersCount,
+            'avgOrderValue'        => $avgOrderValue,
+            'monthlyStats'         => $monthlyStats,
+            'statusBreakdown'      => $statusBreakdown,
+            'paymentMethods'       => $paymentMethods,
+            'topProducts'          => $topProducts,
+            'lowStockProducts'     => $lowStockProducts,
+        ], 'admin');
+    }
+
+    // ------------------------------------------------------------------
+    // In Phiếu Giao Hàng & Hóa Đơn Bán Hàng
+    // ------------------------------------------------------------------
+    public function printOrder(int|string $id): void
+    {
+        $id = (int) $id;
+        $orderModel = new Order();
+        $order = $orderModel->find($id);
+        if (!$order) {
+            $this->abort(404, 'Không tìm thấy đơn hàng cần in');
+        }
+
+        $items = $orderModel->items($id);
+
+        $this->render('admin/order_invoice', [
+            'title' => 'Phiếu Xuất Kho & Hóa Đơn #' . $order['order_code'],
+            'order' => $order,
+            'items' => $items,
+        ], null);
+    }
+
+    // ------------------------------------------------------------------
+    // Quản lý Tin nhắn liên hệ từ khách hàng
+    // ------------------------------------------------------------------
+    public function contacts(): void
+    {
+        $status = $this->input('status');
+        $q = $this->input('q');
+        $page = max(1, $this->inputInt('page', 1));
+        $contactModel = new \App\Models\Contact();
+
+        $result = $contactModel->paginate($status, $q, $page, 20);
+
+        $this->render('admin/contacts', [
+            'title'    => 'Hộp thư liên hệ & Yêu cầu tư vấn',
+            'status'   => $status,
+            'q'        => $q,
+            'result'   => $result,
+            'statuses' => \App\Models\Contact::STATUSES,
+        ], 'admin');
+    }
+
+    public function updateContactStatus(int|string $id): void
+    {
+        $this->verifyCsrf();
+        $id = (int) $id;
+        $status = $this->input('status');
+        $note = $this->input('note');
+
+        (new \App\Models\Contact())->updateStatus($id, $status, $note);
+
+        flash('success', 'Đã cập nhật trạng thái liên hệ thành công!');
+        $this->redirect('/admin/lien-he');
+    }
+
+    public function deleteContact(int|string $id): void
+    {
+        $this->verifyCsrf();
+        $id = (int) $id;
+        (new \App\Models\Contact())->delete($id);
+
+        flash('success', 'Đã xóa tin nhắn liên hệ.');
+        $this->redirect('/admin/lien-he');
+    }
+
+    // ------------------------------------------------------------------
     // Cài đặt Hệ thống Website
     // ------------------------------------------------------------------
     public function settings(): void

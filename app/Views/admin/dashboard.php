@@ -33,7 +33,7 @@
         <div style="font-size: 0.85rem; color: #64748b; margin-bottom: 0.5rem;"><?= icon('award') ?> Doanh số hoàn tất</div>
         <div style="font-size: 1.6rem; font-weight: 700; color: #0f172a;"><?= money($stats['revenue']) ?></div>
         <div style="font-size: 0.75rem; color: #059669; margin-top: 0.25rem;">Doanh thu thực tế</div>
-        <a href="<?= url('/admin/don-hang?status=completed') ?>" style="font-size: 0.75rem; color: #64748b; margin-top: 0.35rem; display: block;">Xem lịch sử &rarr;</a>
+        <a href="<?= url('/admin/thong-ke') ?>" style="font-size: 0.75rem; color: #004098; font-weight: 600; margin-top: 0.35rem; display: block;">Báo cáo chi tiết &rarr;</a>
     </div>
 
     <div class="admin-card">

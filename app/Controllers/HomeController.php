@@ -181,6 +181,18 @@ class HomeController extends Controller
             return;
         }
 
+        try {
+            (new \App\Models\Contact())->create([
+                'name'       => $name,
+                'phone'      => $phone,
+                'email'      => $email,
+                'address'    => $address,
+                'message'    => $message ?: 'Khách hàng yêu cầu liên hệ tư vấn thiết bị điện.',
+                'status'     => 'new',
+                'ip_address' => $_SERVER['REMOTE_ADDR'] ?? '',
+            ]);
+        } catch (\Throwable $e) {}
+
         flash('success', "Cảm ơn Quý khách {$name}! Bộ phận kỹ sư dự án Panasonic tại TP.HCM & Long An đã tiếp nhận thông tin và sẽ liên hệ hỗ trợ trong vòng 15 phút.");
         header('Location: ' . url('/lien-he'));
     }

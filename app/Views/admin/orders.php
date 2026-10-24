@@ -69,7 +69,12 @@ $pages = $result['pages'];
                                 <small><?= date('d/m/Y H:i', strtotime($o['created_at'])) ?></small>
                             </td>
                             <td>
-                                <a href="<?= url('/admin/don-hang/' . $o['id']) ?>" class="btn btn--outline btn--sm">Chi tiết</a>
+                                <div style="display: flex; gap: 0.35rem;">
+                                    <a href="<?= url('/admin/don-hang/' . $o['id']) ?>" class="btn btn--outline btn--sm">Chi tiết</a>
+                                    <a href="<?= url('/admin/don-hang/in-hoa-don/' . $o['id']) ?>" target="_blank" class="btn btn--outline btn--sm" title="In phiếu xuất kho / Hóa đơn" style="padding: 0.35rem 0.5rem; color: #004098;">
+                                        <?= icon('download') ?>
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     <?php endforeach; ?>

@@ -10,7 +10,12 @@
             <h2 style="font-size: 1.3rem; margin: 0;">Đơn hàng: #<?= e($order['order_code']) ?></h2>
             <small class="text-muted">Ngày đặt: <?= date('d/m/Y H:i', strtotime($order['created_at'])) ?></small>
         </div>
-        <a href="<?= url('/admin/don-hang') ?>" class="btn btn--outline btn--sm">&larr; Quay lại danh sách</a>
+        <div style="display: flex; gap: 0.5rem;">
+            <a href="<?= url('/admin/don-hang/in-hoa-don/' . $order['id']) ?>" target="_blank" class="btn btn--primary btn--sm" style="display: inline-flex; align-items: center; gap: 0.35rem;">
+                <?= icon('download') ?> In Phiếu Xuất Kho
+            </a>
+            <a href="<?= url('/admin/don-hang') ?>" class="btn btn--outline btn--sm">&larr; Quay lại danh sách</a>
+        </div>
     </div>
 
     <!-- Cập nhật trạng thái đơn hàng -->
