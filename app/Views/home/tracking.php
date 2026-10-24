@@ -190,7 +190,7 @@
             <?php endif; ?>
 
             <!-- Thông tin người nhận & Địa chỉ giao hàng -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; font-size: 0.9rem;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.25rem; font-size: 0.9rem;">
                 <div>
                     <h4 style="margin: 0 0 0.5rem; font-size: 0.95rem; color: #004098;">Người nhận hàng</h4>
                     <p style="margin: 0.2rem 0;"><strong>Họ tên:</strong> <?= e($order['customer_name']) ?></p>
@@ -204,6 +204,39 @@
                     <?php if (!empty($order['note'])): ?>
                         <p style="margin: 0.2rem 0;"><strong>Ghi chú:</strong> <?= e($order['note']) ?></p>
                     <?php endif; ?>
+                </div>
+            </div>
+
+            <!-- BẢN ĐỒ GIAO HÀNG & ĐỊNH VỊ CÔNG TRÌNH KHÁCH HÀNG (GOOGLE MAPS) -->
+            <div style="background: #fff; border: 1.5px solid #cbd5e1; border-radius: 8px; margin-bottom: 1.75rem; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.03);">
+                <div style="background: #f8fafc; border-bottom: 1px solid #e2e8f0; padding: 0.75rem 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="color: #004098; font-size: 1.1rem; display: inline-flex; align-items: center;"><?= icon('map-pin') ?></span>
+                        <div>
+                            <strong style="color: #004098; font-size: 0.95rem;">Bản Đồ Giao Hàng & Định Vị Điểm Đến</strong>
+                            <div style="font-size: 0.78rem; color: #64748b;">Điểm nhận hàng: <strong><?= e($order['address']) ?></strong></div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                        <a href="https://www.google.com/maps/search/?api=1&query=<?= urlencode($order['address']) ?>" target="_blank" class="btn btn--outline btn--sm" style="font-size: 0.8rem; font-weight: 600; display: inline-flex; align-items: center; gap: 0.25rem;">
+                            📍 Mở Bản Đồ Lớn &nearr;
+                        </a>
+                        <a href="https://www.google.com/maps/dir/?api=1&origin=<?= urlencode(config('address', 'Tổng Kho Panasonic')) ?>&destination=<?= urlencode($order['address']) ?>&travelmode=driving" target="_blank" class="btn btn--primary btn--sm" style="font-size: 0.8rem; font-weight: 700; background: #004098; display: inline-flex; align-items: center; gap: 0.25rem;">
+                            🚗 Lộ Trình Từ Kho Tổng &nearr;
+                        </a>
+                    </div>
+                </div>
+                <div style="height: 280px; width: 100%; background: #f1f5f9; position: relative;">
+                    <iframe 
+                        src="https://maps.google.com/maps?q=<?= urlencode($order['address']) ?>&t=&z=15&ie=UTF8&iwloc=&output=embed" 
+                        width="100%" 
+                        height="100%" 
+                        style="border: 0; display: block;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade"
+                        title="Bản đồ giao hàng #<?= e($order['order_code']) ?>">
+                    </iframe>
                 </div>
             </div>
 

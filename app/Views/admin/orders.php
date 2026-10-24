@@ -52,7 +52,19 @@ $pages = $result['pages'];
                                 </span>
                             </td>
                             <td>
-                                <small><?= e($o['address']) ?></small>
+                                <small style="display: block; line-height: 1.35;"><?= e($o['address']) ?></small>
+                                <div style="margin-top: 4px; display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap;">
+                                    <a href="https://www.google.com/maps/search/?api=1&query=<?= urlencode($o['address']) ?>" target="_blank" style="font-size: 0.72rem; color: #004098; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 2px;" title="Mở địa chỉ khách hàng trên Google Maps">
+                                        <?= icon('map-pin') ?> Maps &nearr;
+                                    </a>
+                                    <?php if (!empty($o['shipping_carrier'])): 
+                                        $c = \App\Models\Order::CARRIERS[$o['shipping_carrier']] ?? null;
+                                    ?>
+                                        <span style="font-size: 0.68rem; padding: 1px 5px; border-radius: 3px; font-weight: 700; background: <?= $c['bg'] ?? '#f1f5f9' ?>; color: <?= $c['color'] ?? '#334155' ?>;">
+                                            <?= e($c['short_name'] ?? $o['shipping_carrier']) ?>
+                                        </span>
+                                    <?php endif; ?>
+                                </div>
                             </td>
                             <td>
                                 <strong class="price"><?= money($o['total']) ?></strong>

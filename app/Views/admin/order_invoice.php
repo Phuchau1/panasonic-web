@@ -333,6 +333,13 @@ $carrierInfo = \App\Models\Order::getCarrierInfo($order['shipping_carrier'] ?? n
                     </span>
                 </div>
             <?php endif; ?>
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-top: 0.65rem; padding-top: 0.65rem; border-top: 1px dashed #cbd5e1;">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=<?= urlencode('https://www.google.com/maps/search/?api=1&query=' . urlencode($order['address'] ?? '')) ?>" width="64" height="64" alt="QR Google Maps" style="border: 1px solid #cbd5e1; border-radius: 4px; padding: 2px; background: #fff; flex-shrink: 0;">
+                <div style="font-size: 11px; line-height: 1.35; color: #475569;">
+                    <strong style="color: #004098;">Quét QR mở chỉ đường Google Maps:</strong><br>
+                    Tài xế/Shipper dùng camera điện thoại quét để mở GPS dẫn đường trực tiếp tới công trình.
+                </div>
+            </div>
         </div>
     </div>
 

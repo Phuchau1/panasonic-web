@@ -360,6 +360,48 @@ $trackingUrl = \App\Models\Order::getTrackingUrl($order['shipping_carrier'] ?? n
         </div>
     </div>
 
+    <!-- BẢN ĐỒ GIAO HÀNG & ĐỊNH VỊ ĐIỂM ĐẾN KHÁCH HÀNG (GOOGLE MAPS) -->
+    <div style="background: #fff; border: 1.5px solid #cbd5e1; border-radius: 8px; margin-bottom: 1.5rem; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.03);">
+        <div style="background: #f8fafc; border-bottom: 1px solid #e2e8f0; padding: 0.85rem 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <div style="width: 30px; height: 30px; border-radius: 6px; background: #004098; color: #fff; display: flex; align-items: center; justify-content: center;">
+                    <?= icon('map-pin') ?>
+                </div>
+                <div>
+                    <strong style="color: #0f172a; font-size: 0.95rem;">Bản Đồ Giao Hàng & Định Vị Khách Hàng</strong>
+                    <div style="font-size: 0.78rem; color: #64748b;">
+                        Kho xuất hàng: <strong><?= e(config('address', 'Kho Tổng Panasonic TP.HCM')) ?></strong> &rarr; Đến: <strong><?= e($order['address']) ?></strong>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap;">
+                <button type="button" onclick="copyAddressText('<?= e(addslashes($order['address'])) ?>', this)" class="btn btn--outline btn--sm" style="font-weight: 600; display: inline-flex; align-items: center; gap: 0.3rem;">
+                    📋 Copy Địa Chỉ
+                </button>
+                <a href="https://www.google.com/maps/search/?api=1&query=<?= urlencode($order['address']) ?>" target="_blank" class="btn btn--outline btn--sm" style="font-weight: 600; display: inline-flex; align-items: center; gap: 0.3rem;">
+                    📍 Xem Bản Đồ Lớn &nearr;
+                </a>
+                <a href="https://www.google.com/maps/dir/?api=1&origin=<?= urlencode(config('address', 'Tổng Kho Panasonic')) ?>&destination=<?= urlencode($order['address']) ?>&travelmode=driving" target="_blank" class="btn btn--primary btn--sm" style="background: #059669; border-color: #059669; font-weight: 700; display: inline-flex; align-items: center; gap: 0.35rem;">
+                    🚗 Chỉ Đường GPS Cho Tài Xế &nearr;
+                </a>
+            </div>
+        </div>
+
+        <div style="position: relative; width: 100%; height: 320px; background: #f1f5f9;">
+            <iframe 
+                src="https://maps.google.com/maps?q=<?= urlencode($order['address']) ?>&t=&z=15&ie=UTF8&iwloc=&output=embed" 
+                width="100%" 
+                height="100%" 
+                style="border: 0; display: block;" 
+                allowfullscreen="" 
+                loading="lazy" 
+                referrerpolicy="no-referrer-when-downgrade"
+                title="Bản đồ giao hàng #<?= e($order['order_code']) ?>">
+            </iframe>
+        </div>
+    </div>
+
     <h4>Chi tiết danh mục thiết bị đã đặt</h4>
     <div class="table-scroll">
         <table class="spec-table">
@@ -437,78 +479,29 @@ function generateTrackingCode() {
     const rand = Math.floor(1000 + Math.random() * 9000);
     trackingInput.value = prefix + '-' + code + '-' + rand;
 }
+
+function copyAddressText(text, btn) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+            const orig = btn.innerHTML;
+            btn.innerHTML = '✓ Đã chép!';
+            btn.style.borderColor = '#059669';
+            btn.style.color = '#059669';
+            setTimeout(() => {
+                btn.innerHTML = orig;
+                btn.style.borderColor = '';
+                btn.style.color = '';
+            }, 2000);
+        });
+    } else {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        btn.innerHTML = '✓ Đã chép!';
+        setTimeout(() => { btn.innerHTML = '📋 Copy Địa Chỉ'; }, 2000);
+    }
+}
 </script>
-
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
-        <div>
-            <h4 style="margin-top: 0;">Thông tin người đặt</h4>
-            <p><strong>Họ tên:</strong> <?= e($order['customer_name']) ?></p>
-            <p><strong>Điện thoại:</strong> <a href="tel:<?= e($order['phone']) ?>"><?= e($order['phone']) ?></a></p>
-            <p><strong>Email:</strong> <?= e($order['email'] ?: '–') ?></p>
-            <p><strong>Địa chỉ nhận hàng:</strong> <?= e($order['address']) ?></p>
-            <p><strong>Loại tài khoản:</strong> 
-                <?php if (!empty($order['user_id'])): ?>
-                    <span class="badge badge--success">Thành viên đã đăng ký (#<?= (int)$order['user_id'] ?>)</span>
-                <?php else: ?>
-                    <span class="badge" style="background:#f1f5f9; color:#64748b;">Khách vãng lai</span>
-                <?php endif; ?>
-            </p>
-        </div>
-        <div>
-            <h4 style="margin-top: 0;">Thông tin xuất hóa đơn & Ghi chú</h4>
-            <p><strong>Công ty:</strong> <?= e($order['company'] ?: 'Khách hàng cá nhân') ?></p>
-            <p><strong>Mã số thuế:</strong> <?= e($order['tax_code'] ?: '–') ?></p>
-            <p><strong>Hình thức TT:</strong> <?= $order['payment_method'] === 'bank_transfer' ? 'Chuyển khoản công ty' : 'COD' ?></p>
-            <p><strong>Ghi chú:</strong> <?= e($order['note'] ?: '–') ?></p>
-        </div>
-    </div>
-
-    <h4>Chi tiết danh mục thiết bị đã đặt</h4>
-    <div class="table-scroll">
-        <table class="spec-table">
-            <thead>
-                <tr>
-                    <th>STT</th>
-                    <th>Tên thiết bị</th>
-                    <th>Model Code</th>
-                    <th>Đơn giá</th>
-                    <th>Số lượng</th>
-                    <th>Thành tiền</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php $i = 1; foreach ($items as $it): ?>
-                    <tr>
-                        <td><?= $i++ ?></td>
-                        <td><strong><?= e($it['product_name']) ?></strong></td>
-                        <td><code><?= e($it['model_code']) ?></code></td>
-                        <td>
-                            <?= money($it['unit_price']) ?>
-                            <?php if ($it['price_type'] === 'wholesale'): ?>
-                                <span class="badge badge--success font-xs">Giá CT</span>
-                            <?php endif; ?>
-                        </td>
-                        <td><?= (int)$it['quantity'] ?></td>
-                        <td><strong><?= money($it['line_total']) ?></strong></td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="5" style="text-align: right;">Tổng theo giá niêm yết:</td>
-                    <td><?= money($order['subtotal']) ?></td>
-                </tr>
-                <?php if ($order['discount'] > 0): ?>
-                    <tr class="text-success">
-                        <td colspan="5" style="text-align: right;">Chiết khấu công trình:</td>
-                        <td>-<?= money($order['discount']) ?></td>
-                    </tr>
-                <?php endif; ?>
-                <tr>
-                    <td colspan="5" style="text-align: right; font-weight: 700; font-size: 1.1rem;">Tổng thanh toán cuối cùng:</td>
-                    <td><strong class="price price--lg"><?= money($order['total']) ?></strong></td>
-                </tr>
-            </tfoot>
-        </table>
-    </div>
-</div>

@@ -295,6 +295,11 @@ $isPaid = ($paymentStatus === 'paid');
                     <p class="mb-2"><strong>Người nhận:</strong> <?= e($order['customer_name']) ?></p>
                     <p class="mb-2"><strong>Số điện thoại:</strong> <?= e($order['phone']) ?></p>
                     <p class="mb-2"><strong>Địa chỉ công trình:</strong> <?= e($order['address']) ?></p>
+                    <div style="margin-top: 6px; margin-bottom: 8px;">
+                        <a href="https://www.google.com/maps/search/?api=1&query=<?= urlencode($order['address']) ?>" target="_blank" class="btn btn--outline btn--sm" style="font-size: 0.78rem; padding: 3px 9px; display: inline-flex; align-items: center; gap: 4px; color: #004098; border-color: #004098; font-weight: 600;">
+                            <?= icon('map-pin') ?> Xem vị trí trên Google Maps &nearr;
+                        </a>
+                    </div>
                     <?php if (!empty($order['note'])): ?>
                         <p class="mb-0 text-muted font-sm"><strong>Ghi chú:</strong> <?= e($order['note']) ?></p>
                     <?php endif; ?>
